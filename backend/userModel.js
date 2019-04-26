@@ -3,6 +3,7 @@ const { Schema } = require('mongoose');
 const { v4 } = require('uuid');
 const { generate } = require('shortId');
 const bcrypt = require('bcrypt');
+const assert = require('http-assert');
 
 const SALT_WORK_FACTOR = parseInt(process.env.SALT_WORK_FACTOR);
 
@@ -25,6 +26,10 @@ userSchema.pre('save', function(next) {
     return next();
   }
 
+  if (this.email) {
+    this.email = this.email.toLowerCase();
+  }
+
   try {
     const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
     this.password = bcrypt.hashSync(this.password, salt);
@@ -33,5 +38,20 @@ userSchema.pre('save', function(next) {
   }
   return next();
 });
+
+userSchema.statics.auth = async function(email, password) {
+  const authEmail = email.toLowerCase();
+
+  console.log('password => ', password);
+  console.log('authEmail => ', authEmail);
+  const user = await this.findOne({ email: authEmail });
+  console.log('user => ', user);
+  assert(user, 404, 'User not found');
+
+  const isValid = await bcrypt.compare(password, user.password);
+  assert(isValid, 401, 'Invalid email/password');
+
+  return user;
+};
 
 module.exports = mongoose.model('User', userSchema);
