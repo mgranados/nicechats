@@ -54,4 +54,13 @@ userSchema.statics.auth = async function(email, password) {
   return user;
 };
 
+userSchema.methods.public = function public() {
+  return {
+    email: this.email,
+    userName: this.userName,
+    uuid: this.uuid,
+    createdAt: this.createdAt,
+  };
+};
+
 module.exports = mongoose.model('User', userSchema);

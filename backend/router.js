@@ -1,10 +1,19 @@
 const Router = require('koa-router');
 const User = require('./userModel');
 const Chat = require('./chatModel');
+const jwt = require('jsonwebtoken');
+const koaJwt = require('koa-jwt');
 
 const router = new Router({
   prefix: '/v1',
 });
+
+router.use(
+  koaJwt({
+    secret: process.env.JWT_SECRET,
+    passthrough: true,
+  }),
+);
 
 router.get('/_health', async (ctx) => {
   ctx.body = 'API UP';
@@ -53,8 +62,23 @@ router.post('/login', async (ctx) => {
   const { email, password } = ctx.request.body;
   const userLogged = await User.auth(email, password);
 
-  //create token
-  ctx.body = userLogged;
+  ctx.body = {
+    token: jwt.sign(
+      {
+        data: userLogged.shortId,
+        expiresIn: '7d',
+      },
+      process.env.JWT_SECRET,
+    ),
+  };
+});
+
+router.get('/me', async (ctx) => {
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const userFound = await User.findOne({ shortId: data });
+
+  ctx.body = userFound.public();
 });
 
 router.post('/logout', async (ctx) => {
