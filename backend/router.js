@@ -25,12 +25,38 @@ router.get('/chats', async (ctx) => {
 });
 
 router.post('/chats', async (ctx) => {
-  // New chat, charge here!
+  // If no user token not possible to create a chat
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
   const { subject } = ctx.request.body;
   const createdChat = await Chat.create({
     subject,
   });
+  createdChat.participants.push(authedUser);
+  authedUser.chats.push(createdChat);
+  await authedUser.save();
+  await createdChat.save();
   ctx.body = createdChat;
+});
+
+router.post('/chats/:uuid', async (ctx) => {
+  // If no user token not possible to create a chat
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
+  const { uuid } = ctx.params;
+  const foundChat = await Chat.findOne({
+    uuid,
+  });
+  ctx.assert(foundChat, 404, 'No chat found');
+  foundChat.participants.push(authedUser);
+  authedUser.chats.push(foundChat);
+  await authedUser.save();
+  await foundChat.save();
+  ctx.body = foundChat;
 });
 
 router.get('/chats/:uuid/messages', (ctx) => {
@@ -76,9 +102,9 @@ router.post('/login', async (ctx) => {
 router.get('/me', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
-  const userFound = await User.findOne({ shortId: data });
+  const userFound = await User.findOne({ shortId: data }).populate('chats');
 
-  ctx.body = userFound.public();
+  ctx.body = userFound;
 });
 
 router.post('/logout', async (ctx) => {

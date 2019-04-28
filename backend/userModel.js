@@ -17,6 +17,7 @@ const userSchema = new Schema(
     userName: { type: String },
     country: { type: String },
     description: { type: String },
+    chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
   },
   { timestamps: true },
 );

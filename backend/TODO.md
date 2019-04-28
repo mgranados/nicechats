@@ -3,7 +3,11 @@
 * [x] Login and return JWT w userId
 * [x] get user from JWT calls
 
-* [ ] protect user calls w auth
-* [ ] test chat endpoints
+* [x] protect user calls w auth
+* [x] test chat endpoints
+
+- [ ] be able to chat (messages)
+
+- [ ] Make UI
 
 * [ ] protect w payments

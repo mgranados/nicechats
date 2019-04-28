@@ -9,7 +9,7 @@ const chatSchema = new Schema(
     uuid: { type: String, default: v4 },
     shortId: { type: String, default: generate },
     subject: { type: String },
-    participants: [Schema.Types.Mixed],
+    participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     messages: [Schema.Types.Mixed],
   },
   { timestamps: true },
