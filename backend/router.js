@@ -1,8 +1,10 @@
 const Router = require('koa-router');
 const User = require('./userModel');
 const Chat = require('./chatModel');
+const Message = require('./messageModel');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
+const find = require('lodash.find');
 
 const router = new Router({
   prefix: '/v1',
@@ -59,8 +61,52 @@ router.post('/chats/:uuid', async (ctx) => {
   ctx.body = foundChat;
 });
 
-router.get('/chats/:uuid/messages', (ctx) => {
-  ctx.body = 'Listing chat messages';
+router.post('/chats/:uuid/messages', async (ctx) => {
+  // If no user token not possible to create a chat
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
+  const { uuid } = ctx.params;
+  const foundChat = await Chat.findOne({
+    uuid,
+  });
+  ctx.assert(foundChat, 404, 'No chat found');
+
+  const { message } = ctx.request.body;
+  const newMessage = await Message.create({
+    actualMessage: message,
+  });
+
+  newMessage.author = authedUser;
+  newMessage.chat = foundChat;
+  await newMessage.save();
+
+  foundChat.messages.push(newMessage);
+  authedUser.messages.push(newMessage);
+
+  await authedUser.save();
+  await foundChat.save();
+
+  ctx.body = foundChat;
+});
+
+router.get('/chats/:uuid/messages', async (ctx) => {
+  // If no user token not possible to create a chat
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
+  const { uuid } = ctx.params;
+  const foundChat = await Chat.findOne({
+    uuid,
+  }).populate(['messages', 'participants']);
+  ctx.assert(foundChat, 404, 'No chat found');
+
+  const found = find(foundChat.participants, authedUser.toJSON());
+  ctx.assert(found, 403, 'Not part of chat');
+
+  ctx.body = foundChat;
 });
 
 router.post('/chats/:uuid/messages', (ctx) => {
