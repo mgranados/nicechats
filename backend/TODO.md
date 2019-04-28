@@ -6,7 +6,7 @@
 * [x] protect user calls w auth
 * [x] test chat endpoints
 
-- [ ] be able to chat (messages)
+- [x] be able to chat (messages)
 
 - [ ] Make UI
 
