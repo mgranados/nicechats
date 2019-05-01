@@ -1,5 +1,5 @@
 * [x] List chats
-* [ ] Login
+* [x] Login
 * [ ] Create a chat
 * [ ] Join a chat
 

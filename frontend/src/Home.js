@@ -1,5 +1,5 @@
-import * as React from 'react';
-import './App.scss';
+import React from 'react';
+import './Home.scss';
 import {
   Footer,
   Content,
@@ -41,8 +41,9 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 import {faCoffee} from '@fortawesome/free-solid-svg-icons';
+import {Link} from 'react-router-dom';
 
-function App() {
+const Home = () => {
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -50,17 +51,23 @@ function App() {
           <Navbar style={{border: 'solid 1px #00D1B2', margin: '0'}}>
             <NavbarBrand>
               <NavbarItem>
-                <h2>💬 Nice chats</h2>
+                <h2>💬 Nice talks</h2>
               </NavbarItem>
               <NavbarBurger />
             </NavbarBrand>
             <NavbarMenu isActive={true} onClick={() => console.log('clicked')}>
               <NavbarStart>
-                <NavbarItem href="#/">My chats</NavbarItem>
-                <NavbarItem href="#/">All chats</NavbarItem>
+                <NavbarItem>
+                  <Link to="/my-talks">My talks</Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link to="/talks">All talks</Link>
+                </NavbarItem>
               </NavbarStart>
               <NavbarEnd>
-                <NavbarItem href="#/">Login</NavbarItem>
+                <NavbarItem>
+                  <Link to="/login">Login</Link>
+                </NavbarItem>
                 <NavbarItem>
                   <Field isGrouped>
                     <Control>
@@ -68,10 +75,10 @@ function App() {
                         id="twitter"
                         data-social-network="Twitter"
                         data-social-action="tweet"
-                        data-social-target="http://nicechats.co"
+                        data-social-target="http://nicetalks.co"
                         target="_blank"
-                        href="https://twitter.com/intent/tweet?text=Nicechats:
-                    having great conversations at&amp;url=http://nicechats.co&amp;via=mgranados_">
+                        href="https://twitter.com/intent/tweet?text=Nicetalks:
+                    having great conversations at&amp;url=http://nicetalks.co&amp;via=mgranados_">
                         <FontAwesomeIcon
                           icon={faTwitter}
                           className="a-lil-to-the-right"
@@ -101,12 +108,12 @@ function App() {
             <Title>Today</Title>
             <ul>
               <li>
-                <a>
+                <Link to="/t/123">
                   <Card>
                     <CardContent>
                       <Media>
                         <MediaContent>
-                          <Title isSize={5}>John Wick</Title>
+                          <Title isSize={5}>John Wick 123</Title>
                         </MediaContent>
                       </Media>
                       <Content>
@@ -117,7 +124,7 @@ function App() {
                       </Content>
                     </CardContent>
                   </Card>
-                </a>
+                </Link>
               </li>
               <li>
                 <a>
@@ -243,5 +250,5 @@ function App() {
       </Footer>
     </React.Fragment>
   );
-}
-export default App;
+};
+export default Home;
