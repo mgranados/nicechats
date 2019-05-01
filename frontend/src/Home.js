@@ -237,8 +237,7 @@ const Home = () => {
             <Columns>
               <Column isFull>
                 <p>
-                  Made with<FontAwesomeIcon icon={faCoffee} />
-                  by <a>mgranados</a>
+                  Made with ☕️ by <a>mgranados</a>
                 </p>
               </Column>
             </Columns>
