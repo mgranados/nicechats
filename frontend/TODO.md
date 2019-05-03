@@ -2,8 +2,8 @@
 * [x] Login
 * [x] Create a chat
 
-- [ ] List of personal chats
-- [ ] List of all chats
+- [x] List of personal chats
+- [x] List of all chats
 
 * [ ] Join a chat
 
