@@ -9,13 +9,6 @@ import {
   Column,
   Hero,
   HeroHeader,
-  Navbar,
-  NavbarBrand,
-  NavbarMenu,
-  NavbarStart,
-  NavbarItem,
-  NavbarEnd,
-  NavbarBurger,
   Field,
   Control,
   Button,
@@ -23,9 +16,7 @@ import {
   Title,
   Container,
 } from 'bloomer';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faTwitter} from '@fortawesome/free-brands-svg-icons';
-import {Link, Redirect} from 'react-router-dom';
+import NiceNavbar from './NiceNavbar';
 
 const login = async (email, password) => {
   const response = await fetch(`/v1/login`, {
@@ -50,10 +41,10 @@ function getCookie(cname) {
   var ca = document.cookie.split(';');
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }
@@ -70,41 +61,7 @@ const Login = () => {
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <Navbar style={{border: 'solid 1px #00D1B2', margin: '0'}}>
-            <NavbarBrand>
-              <NavbarItem>
-                <Link to="/">
-                  <h2>💬 Nice talks</h2>
-                </Link>
-              </NavbarItem>
-              <NavbarBurger />
-            </NavbarBrand>
-            <NavbarMenu isActive={true}>
-              <NavbarStart />
-              <NavbarEnd>
-                <NavbarItem>
-                  <Field isGrouped>
-                    <Control>
-                      <Button
-                        id="twitter"
-                        data-social-network="Twitter"
-                        data-social-action="tweet"
-                        data-social-target="http://nicetalks.co"
-                        target="_blank"
-                        href="https://twitter.com/intent/tweet?text=Nicetalks:
-                    having great conversations at&amp;url=http://nicetalks.co&amp;via=mgranados_">
-                        <FontAwesomeIcon
-                          icon={faTwitter}
-                          className="a-lil-to-the-right"
-                        />
-                        <span>Tweet</span>
-                      </Button>
-                    </Control>
-                  </Field>
-                </NavbarItem>
-              </NavbarEnd>
-            </NavbarMenu>
-          </Navbar>
+          <NiceNavbar />
         </HeroHeader>
         <HeroBody>
           <Container hasTextAlign="centered">
