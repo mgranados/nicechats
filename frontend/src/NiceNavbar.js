@@ -17,6 +17,12 @@ import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 import {Link} from 'react-router-dom';
 
 const NiceNavbar = (props) => {
+  let sessionButton;
+  if (props.isAuthed) {
+    sessionButton = <Link to="/logout">Logout</Link>;
+  } else {
+    sessionButton = <Link to="/login">Login</Link>;
+  }
   return (
     <Navbar style={{border: 'solid 1px #00D1B2', margin: '0'}}>
       <NavbarBrand>
@@ -37,9 +43,7 @@ const NiceNavbar = (props) => {
           </NavbarItem>
         </NavbarStart>
         <NavbarEnd>
-          <NavbarItem>
-            <Link to="/login">Login</Link>
-          </NavbarItem>
+          <NavbarItem>{sessionButton}</NavbarItem>
           <NavbarItem>
             <Field isGrouped>
               <Control>

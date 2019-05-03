@@ -17,6 +17,7 @@ import {
   Container,
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
+import {setCookie} from './utils';
 
 const login = async (email, password) => {
   const response = await fetch(`/v1/login`, {
@@ -28,29 +29,6 @@ const login = async (email, password) => {
   });
   return response;
 };
-
-function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-  var expires = 'expires=' + d.toUTCString();
-  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
-}
-
-function getCookie(cname) {
-  var name = cname + '=';
-  var ca = document.cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return '';
-}
-
 const Login = () => {
   const [session, setSession] = useState({userToken: null});
   const [loginError, setloginError] = useState('');

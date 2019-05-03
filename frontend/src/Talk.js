@@ -23,12 +23,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 
-const Talk = ({match}) => {
+const Talk = (props) => {
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar />
+          <NiceNavbar isAuthed={props.isLogged} />
         </HeroHeader>
       </Hero>
       <Section>
@@ -36,8 +36,8 @@ const Talk = ({match}) => {
           <Columns>
             <Column isSize={6} isOffset={3}>
               <Subtitle>
-                Why there's only {`${match.params.id}`} options to say goodbye
-                in english
+                Why there's only {`${props.match.params.id}`} options to say
+                goodbye in english
               </Subtitle>
               <Card>
                 <CardContent hasTextAlign="left">

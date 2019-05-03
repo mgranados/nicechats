@@ -16,12 +16,12 @@ import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 
-const MyTalks = () => {
+const MyTalks = (props) => {
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar />
+          <NiceNavbar isAuthed={props.isLogged} />
         </HeroHeader>
       </Hero>
       <body>
