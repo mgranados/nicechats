@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  withRouter,
+} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Talks from './Talks';

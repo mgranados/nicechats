@@ -3,12 +3,14 @@ const bodyParser = require('koa-bodyparser');
 const compress = require('koa-compress');
 const responseTime = require('koa-response-time');
 const logger = require('koa-logger');
+const cors = require('@koa/cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = new Koa();
 const router = require('./router');
 
+app.use(cors());
 app.use(bodyParser());
 app.use(compress());
 app.use(responseTime());
@@ -22,5 +24,5 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true });
 
 app.use(router.routes());
 
-app.listen(3000);
-console.log('API up => http://localhost:3000');
+app.listen(4000);
+console.log('API up => http://localhost:4000');

@@ -1,24 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   FieldLabel,
   FieldBody,
-  FieldArea,
-  TextArea,
   Label,
   Input,
-  Help,
-  Checkbox,
-  Footer,
-  Content,
-  Section,
-  Subtitle,
-  Card,
-  CardHeader,
-  CardHeaderTitle,
-  CardContent,
-  Media,
-  MediaContent,
   Columns,
   Column,
   Hero,
@@ -28,30 +14,58 @@ import {
   NavbarMenu,
   NavbarStart,
   NavbarItem,
-  NavbarLink,
-  NavbarDivider,
   NavbarEnd,
   NavbarBurger,
-  NavbarDropdown,
   Field,
   Control,
   Button,
-  Icon,
   HeroBody,
   Title,
-  HeroFooter,
-  Tabs,
-  TabList,
-  Tab,
-  TabLink,
   Container,
 } from 'bloomer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
-import {faCoffee} from '@fortawesome/free-solid-svg-icons';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+
+const login = async (email, password) => {
+  const response = await fetch(`/v1/login`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({email, password}),
+  });
+  return response;
+};
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+  var expires = 'expires=' + d.toUTCString();
+  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
+}
+
+function getCookie(cname) {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
+}
 
 const Login = () => {
+  const [session, setSession] = useState({userToken: null});
+  const [loginError, setloginError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -65,7 +79,7 @@ const Login = () => {
               </NavbarItem>
               <NavbarBurger />
             </NavbarBrand>
-            <NavbarMenu isActive={true} onClick={() => console.log('clicked')}>
+            <NavbarMenu isActive={true}>
               <NavbarStart />
               <NavbarEnd>
                 <NavbarItem>
@@ -105,6 +119,8 @@ const Login = () => {
                     <Field>
                       <Control isExpanded>
                         <Input
+                          value={email}
+                          onChange={(event) => setEmail(event.target.value)}
                           type="email"
                           placeholder="something@gmail.com most likely"
                         />
@@ -119,7 +135,12 @@ const Login = () => {
                   <FieldBody>
                     <Field>
                       <Control isExpanded>
-                        <Input type="password" placeholder="HopeIts4G00dOn3" />
+                        <Input
+                          value={password}
+                          type="password"
+                          onChange={(event) => setPassword(event.target.value)}
+                          placeholder="HopeIts4G00dOn3"
+                        />
                       </Control>
                     </Field>
                   </FieldBody>
@@ -130,11 +151,24 @@ const Login = () => {
                   <FieldBody>
                     <Field>
                       <Control>
-                        <Button isColor="primary">Submit</Button>
+                        <Button
+                          isColor="primary"
+                          onClick={async () => {
+                            const response = await login(email, password);
+                            if (response.status === 200) {
+                              const responseReady = await response.json();
+                              setCookie('token', responseReady.token, 3);
+                              window.location.href = '/my-talks';
+                            }
+                          }}>
+                          Submit
+                        </Button>
                       </Control>
                     </Field>
                   </FieldBody>
                 </Field>
+                <p>{session.userToken}</p>
+                <p>{loginError}</p>
               </Column>
             </Columns>
           </Container>
@@ -143,4 +177,5 @@ const Login = () => {
     </React.Fragment>
   );
 };
+
 export default Login;
