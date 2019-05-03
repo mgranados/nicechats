@@ -49,7 +49,7 @@ import {
 } from 'bloomer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
-import {faCoffee} from '@fortawesome/free-solid-svg-icons';
+import {faSync} from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 
 const Talk = ({match}) => {
@@ -67,8 +67,18 @@ const Talk = ({match}) => {
               <NavbarBurger />
             </NavbarBrand>
             <NavbarMenu isActive={true} onClick={() => console.log('clicked')}>
-              <NavbarStart />
+              <NavbarStart>
+                <NavbarItem>
+                  <Link to="/my-talks">My talks</Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link to="/talks">All talks</Link>
+                </NavbarItem>
+              </NavbarStart>
               <NavbarEnd>
+                <NavbarItem>
+                  <Link to="/login">Login</Link>
+                </NavbarItem>
                 <NavbarItem>
                   <Field isGrouped>
                     <Control>
@@ -145,7 +155,7 @@ const Talk = ({match}) => {
                   </Content>
                 </CardContent>
               </Card>
-              <Field isHorizontal>
+              <Field isHorizontal className="message-box">
                 <FieldBody>
                   <Field>
                     <Control>
@@ -159,6 +169,9 @@ const Talk = ({match}) => {
                 <FieldBody>
                   <Field>
                     <Control>
+                      <Button isColor="secondary" className="sync-button">
+                        <FontAwesomeIcon icon={faSync} />
+                      </Button>
                       <Button isColor="primary">Submit</Button>
                     </Control>
                   </Field>
