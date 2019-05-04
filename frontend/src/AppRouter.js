@@ -7,69 +7,17 @@ import MyTalks from './MyTalks';
 import Talk from './Talk';
 import NewTalk from './NewTalk';
 import NotFound from './NotFound';
-import {getCookie} from './utils';
 
 const AppRouter = () => {
-  const [userSession, setUserSession] = useState({
-    isLogged: false,
-    token: null,
-  });
-  useEffect(() => {
-    const userToken = getCookie('token');
-    if (userToken) {
-      setUserSession({
-        isLogged: true,
-        token: userToken,
-      });
-    }
-  }, []);
-
   return (
     <Router>
       <Switch>
-        <Route
-          exact
-          path="/"
-          render={(props) => (
-            <Home
-              {...props}
-              isLogged={userSession.isLogged}
-              userToken={userSession.token}
-            />
-          )}
-        />
+        <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
-        <Route
-          path="/talks"
-          render={(props) => (
-            <Talks
-              {...props}
-              isLogged={userSession.isLogged}
-              userToken={userSession.token}
-            />
-          )}
-        />
-        <Route
-          path="/new"
-          render={(props) => (
-            <NewTalk
-              {...props}
-              isLogged={userSession.isLogged}
-              userToken={userSession.token}
-            />
-          )}
-        />
+        <Route path="/talks" component={Talks} />
+        <Route path="/new" component={NewTalk} />
         <Route path="/my-talks" component={MyTalks} />
-        <Route
-          path="/t/:id"
-          render={(props) => (
-            <Talk
-              {...props}
-              isLogged={userSession.isLogged}
-              userToken={userSession.token}
-            />
-          )}
-        />
+        <Route path="/t/:id" component={Talk} />
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route component={NotFound} />
       </Switch>

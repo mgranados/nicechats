@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   FieldBody,
@@ -22,13 +22,40 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
+import {getCookie} from './utils';
+
+const newMessage = async (message, talkId, userToken) => {
+  const response = await fetch(`/v1/chats/${talkId}/messages`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+    body: JSON.stringify({message}),
+  });
+  return response;
+};
 
 const Talk = (props) => {
+  const [userSession, setUserSession] = useState({
+    isLogged: false,
+    token: null,
+  });
+  useEffect(() => {
+    const userToken = getCookie('token');
+    if (userToken) {
+      setUserSession({
+        isLogged: true,
+        token: userToken,
+      });
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar isAuthed={props.isLogged} />
+          <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
       </Hero>
       <Section>

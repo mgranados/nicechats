@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   Content,
@@ -17,13 +17,28 @@ import {
 import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
+import {getCookie} from './utils';
 
 const Home = (props) => {
+  const [userSession, setUserSession] = useState({
+    isLogged: false,
+    token: null,
+  });
+  useEffect(() => {
+    const userToken = getCookie('token');
+    if (userToken) {
+      setUserSession({
+        isLogged: true,
+        token: userToken,
+      });
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar isAuthed={props.isLogged} />
+          <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
         <HeroBody>
           <Container hasTextAlign="centered">

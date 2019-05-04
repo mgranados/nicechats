@@ -72,45 +72,43 @@ const MyTalks = (props) => {
           <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
       </Hero>
-      <body>
-        <Section>
-          <Container>
-            <Link to="/new">
-              <Button isPulled="right" isColor="primary">
-                Create Talk
-              </Button>
-            </Link>
-            <Title>Your chats</Title>
-            {isLoading ? (
-              <div>Loading ...</div>
-            ) : (
-              <ul>
-                {myTalks &&
-                  myTalks.map((talk) => (
-                    <li key={talk.shortId}>
-                      <Link to={`t/${talk.shortId}`}>
-                        <Card>
-                          <CardContent>
-                            <Media>
-                              <MediaContent>
-                                <Title isSize={5}>John Wick 123</Title>
-                              </MediaContent>
-                            </Media>
-                            <Content>
-                              {talk.subject}
-                              <br />
-                              <small>{talk.createdAt}</small>
-                            </Content>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            )}
-          </Container>
-        </Section>
-      </body>
+      <Section>
+        <Container>
+          <Link to="/new">
+            <Button isPulled="right" isColor="primary">
+              Create Talk
+            </Button>
+          </Link>
+          <Title>Your chats</Title>
+          {isLoading ? (
+            <div>Loading ...</div>
+          ) : (
+            <ul>
+              {myTalks &&
+                myTalks.map((talk) => (
+                  <li key={talk.shortId}>
+                    <Link to={`t/${talk.shortId}`}>
+                      <Card>
+                        <CardContent>
+                          <Media>
+                            <MediaContent>
+                              <Title isSize={5}>John Wick 123</Title>
+                            </MediaContent>
+                          </Media>
+                          <Content>
+                            {talk.subject}
+                            <br />
+                            <small>{talk.createdAt}</small>
+                          </Content>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          )}
+        </Container>
+      </Section>
       <NiceFooter />
     </React.Fragment>
   );

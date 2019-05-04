@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   FieldLabel,
@@ -18,6 +18,7 @@ import {
   Container,
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
+import {getCookie} from './utils';
 
 const createTalk = async (subject, userToken) => {
   const response = await fetch(`/v1/chats`, {
@@ -31,7 +32,21 @@ const createTalk = async (subject, userToken) => {
   return response;
 };
 
-const NewTalk = (props) => {
+const NewTalk = () => {
+  const [userSession, setUserSession] = useState({
+    isLogged: false,
+    token: null,
+  });
+  useEffect(() => {
+    const userToken = getCookie('token');
+    if (userToken) {
+      setUserSession({
+        isLogged: true,
+        token: userToken,
+      });
+    }
+  }, []);
+
   const [subject, setSubject] = useState('');
   const [errorCreating, setErrorCreating] = useState('');
 
@@ -45,7 +60,7 @@ const NewTalk = (props) => {
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar />
+          <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
         <HeroBody>
           <Container hasTextAlign="centered">
@@ -80,7 +95,7 @@ const NewTalk = (props) => {
                           onClick={async () => {
                             const response = await createTalk(
                               subject,
-                              props.userToken,
+                              userSession.token,
                             );
                             if (response.status === 200) {
                               const responseReady = await response.json();
