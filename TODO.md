@@ -1,16 +1,16 @@
 Next feature:
 
-* [] logout (delete cookie)
-* [] create a real chat
-* [] format public API
-* [] list all chats
-* [] pagination of all chats
-* [] join chat if it is not yours not full (2)
-* [] send messages! (reload page)
-* [] establish credit usage
+* [ ] logout (delete cookie)
+* [ ] create a real chat
+* [ ] format public API
+* [ ] list all chats
+* [ ] pagination of all chats
+* [ ] join chat if it is not yours not full (2)
+* [ ] send messages! (reload page)
+* [ ] establish credit usage
 * ALPHA
-* [] refill credit with stripe
-* [] /me and update profile
+* [ ] refill credit with stripe
+* [ ] /me and update profile
 * BETAAAAAA
-* [] signup
-* [] sockets
+* [ ] signup
+* [ ] sockets
