@@ -15,11 +15,17 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 import {Link} from 'react-router-dom';
+import {deleteCookie} from './utils';
+
+const logout = () => {
+  deleteCookie('token');
+  window.location.href = '/';
+};
 
 const NiceNavbar = (props) => {
   let sessionButton;
   if (props.isAuthed) {
-    sessionButton = <Link to="/logout">Logout</Link>;
+    sessionButton = <Button onClick={() => logout('token')}>Logout</Button>;
   } else {
     sessionButton = <Link to="/login">Login</Link>;
   }

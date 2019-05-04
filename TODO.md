@@ -1,6 +1,6 @@
 Next feature:
 
-* [ ] logout (delete cookie)
+* [x] logout (delete cookie)
 * [ ] create a real chat
 * [ ] format public API
 * [ ] list all chats
