@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './Home.scss';
 import {
   FieldLabel,
@@ -30,8 +30,6 @@ const login = async (email, password) => {
   return response;
 };
 const Login = () => {
-  const [session, setSession] = useState({userToken: null});
-  const [loginError, setloginError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -102,8 +100,6 @@ const Login = () => {
                     </Field>
                   </FieldBody>
                 </Field>
-                <p>{session.userToken}</p>
-                <p>{loginError}</p>
               </Column>
             </Columns>
           </Container>

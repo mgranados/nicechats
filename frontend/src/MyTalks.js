@@ -36,7 +36,6 @@ const MyTalks = (props) => {
   });
   useEffect(() => {
     const userToken = getCookie('token');
-    console.log('got token =>', userToken);
     if (userToken) {
       setUserSession({
         isLogged: true,

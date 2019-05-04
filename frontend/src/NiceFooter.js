@@ -8,7 +8,7 @@ const NiceFooter = () => {
       <Container>
         <Content>
           <Columns>
-            <Column isFull>
+            <Column isSize={12}>
               <p>
                 Made with ☕️ by <a>mgranados</a>
               </p>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './Home.scss';
 import {
   FieldLabel,
@@ -17,7 +17,6 @@ import {
   Title,
   Container,
 } from 'bloomer';
-import {Redirect} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 
 const createTalk = async (subject, userToken) => {

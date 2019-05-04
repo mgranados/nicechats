@@ -35,135 +35,133 @@ const Home = (props) => {
           </Container>
         </HeroBody>
       </Hero>
-      <body>
-        <Section>
-          <Container>
-            <Title>Today</Title>
-            <ul>
-              <li>
-                <Link to="/t/123">
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>John Wick 123</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>30 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-            </ul>
-          </Container>
+      <Section>
+        <Container>
+          <Title>Today</Title>
+          <ul>
+            <li>
+              <Link to="/t/123">
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>John Wick 123</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>30 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </Link>
+            </li>
+            <li>
+              <a>
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>El Marto</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>50 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </a>
+            </li>
+            <li>
+              <a>
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>El Marto</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>50 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </a>
+            </li>
+          </ul>
+        </Container>
 
-          <Container className="yesterday-list">
-            <Title isSize={4}>Yesterday</Title>
-            <ul>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>John Wick</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>30 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-            </ul>
-          </Container>
-        </Section>
-      </body>
+        <Container className="yesterday-list">
+          <Title isSize={4}>Yesterday</Title>
+          <ul>
+            <li>
+              <a>
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>John Wick</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>30 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </a>
+            </li>
+            <li>
+              <a>
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>El Marto</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>50 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </a>
+            </li>
+            <li>
+              <a>
+                <Card>
+                  <CardContent>
+                    <Media>
+                      <MediaContent>
+                        <Title isSize={5}>El Marto</Title>
+                      </MediaContent>
+                    </Media>
+                    <Content>
+                      People Keep Asking If I’m Back, And I Haven’t Really Had
+                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
+                      <br />
+                      <small>50 minutes ago</small>
+                    </Content>
+                  </CardContent>
+                </Card>
+              </a>
+            </li>
+          </ul>
+        </Container>
+      </Section>
       <NiceFooter />
     </React.Fragment>
   );

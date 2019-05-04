@@ -39,7 +39,7 @@ const NiceNavbar = (props) => {
         </NavbarItem>
         <NavbarBurger />
       </NavbarBrand>
-      <NavbarMenu isActive={true} onClick={() => console.log('clicked')}>
+      <NavbarMenu isActive={true}>
         <NavbarStart>
           <NavbarItem>
             <Link to="/my-talks">My talks</Link>

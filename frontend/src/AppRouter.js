@@ -59,16 +59,7 @@ const AppRouter = () => {
             />
           )}
         />
-        <Route
-          path="/my-talks"
-          render={(props) => (
-            <MyTalks
-              {...props}
-              isLogged={userSession.isLogged}
-              userToken={userSession.token}
-            />
-          )}
-        />
+        <Route path="/my-talks" component={MyTalks} />
         <Route
           path="/t/:id"
           render={(props) => (
@@ -79,7 +70,7 @@ const AppRouter = () => {
             />
           )}
         />
-        {/* when none of the above match, <NoMatch> will be rendered */}
+        {/* when none of the above match, <NotFound> will be rendered */}
         <Route component={NotFound} />
       </Switch>
     </Router>

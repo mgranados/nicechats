@@ -9,7 +9,7 @@ export function deleteCookie(cname) {
   var d = new Date();
   d.setTime(d.getTime() - 4000 * 24 * 60 * 60 * 1000); //4000 days ago
   var expires = 'expires=' + d.toUTCString();
-  document.cookie = cname + '=' + ';' + expires + ';path=/';
+  document.cookie = cname + '=;' + expires + ';path=/';
 }
 
 export function getCookie(cname) {

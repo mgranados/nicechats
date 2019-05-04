@@ -1,26 +1,14 @@
 import React from 'react';
 import './Home.scss';
 import {
-  FieldBody,
-  TextArea,
-  Content,
   Section,
   Subtitle,
-  Card,
-  CardContent,
-  Media,
-  MediaContent,
   Columns,
   Column,
   Hero,
   HeroHeader,
-  Field,
-  Control,
-  Button,
   Container,
 } from 'bloomer';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 
 const NotFound = ({match}) => {
@@ -35,7 +23,7 @@ const NotFound = ({match}) => {
         <Container hasTextAlign="centered">
           <Columns>
             <Column isSize={6} isOffset={3}>
-              <Subtitle>Not Found. But what is really found anyways?</Subtitle>
+              <Subtitle>Not Found. But what have we found anyways?</Subtitle>
             </Column>
           </Columns>
         </Container>

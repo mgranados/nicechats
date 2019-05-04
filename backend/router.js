@@ -91,6 +91,33 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   ctx.body = foundChat;
 });
 
+router.get('/chats/others', async (ctx) => {
+  // If no user token not possible to get a chat list
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+  ctx.assert(authedUser, 404, 'Authed user found');
+
+  const foundChats = await Chat.find({
+    'participants._id': { $ne: authedUser.id },
+    participants: { $size: 1 },
+  })
+    .sort('-createdAt')
+    .populate('participants');
+  ctx.assert(foundChats, 404, 'No chats found');
+  ctx.body = foundChats;
+});
+
+router.get('/chats/available', async (ctx) => {
+  const foundChats = await Chat.find({
+    participants: { $size: 1 },
+  })
+    .sort('-createdAt')
+    .populate('participants');
+  ctx.assert(foundChats, 404, 'No chats found');
+  ctx.body = foundChats;
+});
+
 router.get('/chats/me', async (ctx) => {
   // If no user token not possible to get a chat list
   ctx.assert(ctx.state.user, 403, 'No user set');
