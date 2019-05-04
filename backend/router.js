@@ -91,6 +91,17 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   ctx.body = foundChat;
 });
 
+router.get('/chats/me', async (ctx) => {
+  // If no user token not possible to get a chat list
+  ctx.assert(ctx.state.user, 403, 'No user set');
+
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data }).populate('chats');
+  ctx.assert(authedUser, 404, 'No user logged');
+
+  ctx.body = authedUser.chats;
+});
+
 router.get('/chats/:uuid/messages', async (ctx) => {
   // If no user token not possible to create a chat
   ctx.assert(ctx.state.user, 403, 'No user set');

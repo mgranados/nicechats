@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   Content,
@@ -17,7 +17,35 @@ import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 
+const getMyTalks = async (userToken) => {
+  const response = await fetch(`/v1/chats/me`, {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+  });
+  return response;
+};
+
 const MyTalks = (props) => {
+  const [myTalks, setMyTalks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  //useEffect to get talks
+  useEffect(() => {
+    const getTalks = async () => {
+      setIsLoading(true);
+      const response = await getMyTalks(props.userToken);
+      if (response.status === 200) {
+        const responseReady = await response.json();
+        setMyTalks(responseReady);
+      }
+      setIsLoading(false);
+    };
+    getTalks();
+  }, []);
+
+  //render list only
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -34,65 +62,33 @@ const MyTalks = (props) => {
               </Button>
             </Link>
             <Title>Your chats</Title>
-            <ul>
-              <li>
-                <Link to="/t/123">
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>John Wick 123</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>30 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <Card>
-                    <CardContent>
-                      <Media>
-                        <MediaContent>
-                          <Title isSize={5}>El Marto</Title>
-                        </MediaContent>
-                      </Media>
-                      <Content>
-                        People Keep Asking If I’m Back, And I Haven’t Really Had
-                        An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                        <br />
-                        <small>50 minutes ago</small>
-                      </Content>
-                    </CardContent>
-                  </Card>
-                </a>
-              </li>
-            </ul>
+            {isLoading ? (
+              <div>Loading ...</div>
+            ) : (
+              <ul>
+                {myTalks &&
+                  myTalks.map((talk) => (
+                    <li key={talk.shortId}>
+                      <Link to={`t/${talk.shortId}`}>
+                        <Card>
+                          <CardContent>
+                            <Media>
+                              <MediaContent>
+                                <Title isSize={5}>John Wick 123</Title>
+                              </MediaContent>
+                            </Media>
+                            <Content>
+                              {talk.subject}
+                              <br />
+                              <small>{talk.createdAt}</small>
+                            </Content>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            )}
           </Container>
         </Section>
       </body>
