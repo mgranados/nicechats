@@ -22,7 +22,7 @@ const AppRouter = () => {
         token: userToken,
       });
     }
-  });
+  }, []);
 
   return (
     <Router>

@@ -16,6 +16,7 @@ import {
 import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
+import {getCookie} from './utils';
 
 const getMyTalks = async (userToken) => {
   const response = await fetch(`/v1/chats/me`, {
@@ -29,28 +30,47 @@ const getMyTalks = async (userToken) => {
 };
 
 const MyTalks = (props) => {
+  const [userSession, setUserSession] = useState({
+    isLogged: false,
+    token: null,
+  });
+  useEffect(() => {
+    const userToken = getCookie('token');
+    console.log('got token =>', userToken);
+    if (userToken) {
+      setUserSession({
+        isLogged: true,
+        token: userToken,
+      });
+    }
+  }, []);
+
   const [myTalks, setMyTalks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  //useEffect to get talks
-  useEffect(() => {
-    const getTalks = async () => {
+  useEffect(
+    () => {
       setIsLoading(true);
-      const response = await getMyTalks(props.userToken);
-      if (response.status === 200) {
-        const responseReady = await response.json();
-        setMyTalks(responseReady);
+      async function getTalks() {
+        const response = await getMyTalks(userSession.token);
+        if (response.status === 200) {
+          const responseReady = await response.json();
+          setMyTalks(responseReady);
+        } else {
+          setMyTalks([]);
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    };
-    getTalks();
-  }, []);
+      getTalks();
+    },
+    [userSession],
+  );
 
   //render list only
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar isAuthed={props.isLogged} />
+          <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
       </Hero>
       <body>
