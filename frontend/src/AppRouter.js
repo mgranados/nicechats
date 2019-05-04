@@ -5,6 +5,7 @@ import Login from './Login';
 import Talks from './Talks';
 import MyTalks from './MyTalks';
 import Talk from './Talk';
+import NewTalk from './NewTalk';
 import NotFound from './NotFound';
 import {getCookie} from './utils';
 
@@ -42,6 +43,16 @@ const AppRouter = () => {
           path="/talks"
           render={(props) => (
             <Talks
+              {...props}
+              isLogged={userSession.isLogged}
+              userToken={userSession.token}
+            />
+          )}
+        />
+        <Route
+          path="/new"
+          render={(props) => (
+            <NewTalk
               {...props}
               isLogged={userSession.isLogged}
               userToken={userSession.token}

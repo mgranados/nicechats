@@ -28,6 +28,11 @@ const Talks = (props) => {
       <body>
         <Section>
           <Container>
+            <Link to="/new">
+              <Button isPulled="right" isColor="primary">
+                Create Talk
+              </Button>
+            </Link>
             <Title>Latest chats</Title>
             <ul>
               <li>

@@ -3,6 +3,7 @@ import './Home.scss';
 import {
   Content,
   Section,
+  Button,
   Card,
   CardContent,
   Media,
@@ -27,6 +28,11 @@ const MyTalks = (props) => {
       <body>
         <Section>
           <Container>
+            <Link to="/new">
+              <Button isPulled="right" isColor="primary">
+                Create Talk
+              </Button>
+            </Link>
             <Title>Your chats</Title>
             <ul>
               <li>
