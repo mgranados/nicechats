@@ -47,6 +47,17 @@ const postNewMessage = async (message, talkId, userToken) => {
   return response;
 };
 
+const postJoinTalk = async (talkId, userToken) => {
+  const response = await fetch(`/v1/chats/${talkId}`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+  });
+  return response;
+};
+
 const Talk = (props) => {
   const [userSession, setUserSession] = useState({
     isLogged: false,
@@ -113,6 +124,29 @@ const Talk = (props) => {
     [post],
   );
 
+  const [partOfChat, setPartOfChat] = useState(false);
+  const [joinChat, setJoinChat] = useState(false);
+  useEffect(
+    () => {
+      async function joinChatAsync() {
+        const response = await postJoinTalk(
+          props.match.params.id,
+          userSession.token,
+        );
+        if (response.status === 200) {
+          const responseReady = await response.json();
+          setReloadPage(true);
+          setPartOfChat(true);
+        }
+      }
+      if (joinChat) {
+        joinChatAsync();
+      }
+      setJoinChat(false);
+    },
+    [joinChat],
+  );
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -149,37 +183,59 @@ const Talk = (props) => {
                   </div>
                 )}
               </Card>
-              <Field isHorizontal className="message-box">
-                <FieldBody>
-                  <Field>
-                    <Control>
-                      <TextArea
-                        value={newMessage}
-                        onChange={(event) => setNewMessage(event.target.value)}
-                        placeholder="Explain why 42 is the answer to the Ultimate Question of Life, the Universe and Everything"
-                      />
-                    </Control>
+              {partOfChat ? (
+                <React.Fragment>
+                  <Field isHorizontal className="message-box">
+                    <FieldBody>
+                      <Field>
+                        <Control>
+                          <TextArea
+                            value={newMessage}
+                            onChange={(event) =>
+                              setNewMessage(event.target.value)
+                            }
+                            placeholder="Explain why 42 is the answer to the Ultimate Question of Life, the Universe and Everything"
+                          />
+                        </Control>
+                      </Field>
+                    </FieldBody>
                   </Field>
-                </FieldBody>
-              </Field>
 
-              <Field isHorizontal isPulled="right">
-                <FieldBody>
-                  <Field>
-                    <Control>
-                      <Button
-                        onClick={() => setReloadPage(true)}
-                        isColor="secondary"
-                        className="sync-button">
-                        <FontAwesomeIcon icon={faSync} />
-                      </Button>
-                      <Button onClick={() => setPost(true)} isColor="primary">
-                        Submit
-                      </Button>
-                    </Control>
+                  <Field isHorizontal isPulled="right">
+                    <FieldBody>
+                      <Field>
+                        <Control>
+                          <Button
+                            onClick={() => setReloadPage(true)}
+                            isColor="secondary"
+                            className="sync-button">
+                            <FontAwesomeIcon icon={faSync} />
+                          </Button>
+                          <Button
+                            onClick={() => setPost(true)}
+                            isColor="primary">
+                            Submit
+                          </Button>
+                        </Control>
+                      </Field>
+                    </FieldBody>
                   </Field>
-                </FieldBody>
-              </Field>
+                </React.Fragment>
+              ) : (
+                <Field isHorizontal isPulled="right">
+                  <FieldBody>
+                    <Field>
+                      <Control>
+                        <Button
+                          onClick={() => setJoinChat(true)}
+                          isColor="primary">
+                          Join Chat
+                        </Button>
+                      </Control>
+                    </Field>
+                  </FieldBody>
+                </Field>
+              )}
             </Column>
           </Columns>
         </Container>

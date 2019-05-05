@@ -51,7 +51,7 @@ router.post('/chats/:uuid', async (ctx) => {
 
   const { uuid } = ctx.params;
   const foundChat = await Chat.findOne({
-    uuid,
+    shortId: uuid,
   });
   ctx.assert(foundChat, 404, 'No chat found');
   foundChat.participants.push(authedUser);
@@ -89,6 +89,17 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   await foundChat.save();
 
   ctx.body = foundChat;
+});
+
+router.get('/chats/recent', async (ctx) => {
+  const foundChats = await Chat.find({
+    participants: { $size: 1 },
+  })
+    .sort('-createdAt')
+    .populate('participants')
+    .limit(5);
+  ctx.assert(foundChats, 404, 'No chats found');
+  ctx.body = foundChats;
 });
 
 router.get('/chats/others', async (ctx) => {
@@ -146,8 +157,8 @@ router.get('/chats/:uuid/messages', async (ctx) => {
     });
   ctx.assert(foundChat, 404, 'No chat found');
 
-  const found = find(foundChat.participants, authedUser.toJSON());
-  ctx.assert(found, 403, 'Not part of chat');
+  //const found = find(foundChat.participants, authedUser.toJSON());
+  //ctx.assert(found, 403, 'Not part of chat');
 
   ctx.body = foundChat;
 });

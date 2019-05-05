@@ -19,6 +19,13 @@ import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
 
+const getRecentTalks = async (route, userToken = '') => {
+  const response = await fetch(`/v1/chats/recent`, {
+    method: 'get',
+  });
+  return response;
+};
+
 const Home = (props) => {
   const [userSession, setUserSession] = useState({
     isLogged: false,
@@ -32,6 +39,23 @@ const Home = (props) => {
         token: userToken,
       });
     }
+  }, []);
+
+  const [recentTalks, setRecentTalks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    async function getHomeTalks() {
+      const response = await getRecentTalks();
+      if (response.status === 200) {
+        const responseReady = await response.json();
+        setRecentTalks(responseReady);
+      } else {
+        setRecentTalks([]);
+      }
+      setIsLoading(false);
+    }
+    getHomeTalks();
   }, []);
 
   return (
@@ -52,129 +76,36 @@ const Home = (props) => {
       </Hero>
       <Section>
         <Container>
-          <Title>Today</Title>
-          <ul>
-            <li>
-              <Link to="/t/123">
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>John Wick 123</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>30 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </Link>
-            </li>
-            <li>
-              <a>
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>El Marto</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>50 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </a>
-            </li>
-            <li>
-              <a>
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>El Marto</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>50 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </a>
-            </li>
-          </ul>
-        </Container>
-
-        <Container className="yesterday-list">
-          <Title isSize={4}>Yesterday</Title>
-          <ul>
-            <li>
-              <a>
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>John Wick</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>30 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </a>
-            </li>
-            <li>
-              <a>
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>El Marto</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>50 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </a>
-            </li>
-            <li>
-              <a>
-                <Card>
-                  <CardContent>
-                    <Media>
-                      <MediaContent>
-                        <Title isSize={5}>El Marto</Title>
-                      </MediaContent>
-                    </Media>
-                    <Content>
-                      People Keep Asking If I’m Back, And I Haven’t Really Had
-                      An Answer, But Now, Yeah, I’m Thinking I’m Back.
-                      <br />
-                      <small>50 minutes ago</small>
-                    </Content>
-                  </CardContent>
-                </Card>
-              </a>
-            </li>
-          </ul>
+          <Title>Recent Talks</Title>
+          {isLoading ? (
+            <div>Loading ...</div>
+          ) : (
+            <ul>
+              {recentTalks &&
+                recentTalks.map((talk) => (
+                  <li key={talk.shortId}>
+                    <Link to={`t/${talk.shortId}`}>
+                      <Card>
+                        <CardContent>
+                          <Media>
+                            <MediaContent>
+                              <Subtitle isSize={5}>
+                                {talk.participants[0].userName}
+                              </Subtitle>
+                            </MediaContent>
+                          </Media>
+                          <Content>
+                            {talk.subject}
+                            <br />
+                            <small>{talk.createdAt}</small>
+                          </Content>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          )}
         </Container>
       </Section>
       <NiceFooter />
