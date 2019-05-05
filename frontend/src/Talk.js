@@ -24,7 +24,18 @@ import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
 
-const newMessage = async (message, talkId, userToken) => {
+const getTalkDetails = async (talkId, userToken) => {
+  const response = await fetch(`/v1/chats/${talkId}/messages`, {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+  });
+  return response;
+};
+
+const postNewMessage = async (message, talkId, userToken) => {
   const response = await fetch(`/v1/chats/${talkId}/messages`, {
     method: 'post',
     headers: {
@@ -51,6 +62,49 @@ const Talk = (props) => {
     }
   }, []);
 
+  const [fullTalk, setFullTalk] = useState({});
+  const [reloadPage, setReloadPage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(
+    () => {
+      setIsLoading(true);
+      async function getTalk() {
+        const response = await getTalkDetails(
+          props.match.params.id,
+          userSession.token,
+        );
+        if (response.status === 200) {
+          const responseReady = await response.json();
+          setFullTalk(responseReady);
+        } else {
+          setFullTalk([]);
+        }
+        setIsLoading(false);
+      }
+      getTalk();
+    },
+    [userSession, reloadPage],
+  );
+
+  const [newMessage, setNewMessage] = useState('');
+  const [post, setPost] = useState(false);
+  useEffect(
+    () => {
+      async function postMessage() {
+        const response = await postNewMessage(
+          newMessage,
+          props.match.params.id,
+          userSession.token,
+        );
+        if (response.status === 200) {
+          const responseReady = await response.json();
+        }
+      }
+      postMessage();
+    },
+    [post],
+  );
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -62,58 +116,38 @@ const Talk = (props) => {
         <Container hasTextAlign="centered">
           <Columns>
             <Column isSize={6} isOffset={3}>
-              <Subtitle>
-                Why there's only {`${props.match.params.id}`} options to say
-                goodbye in english
-              </Subtitle>
+              <Subtitle>{fullTalk.subject}</Subtitle>
               <Card>
-                <CardContent hasTextAlign="left">
-                  <Media>
-                    <MediaContent>
-                      <Subtitle isSize={6}>@johnwick</Subtitle>
-                    </MediaContent>
-                  </Media>
-                  <Content>
-                    People Keep Asking If I’m Back, And I Haven’t Really Had An
-                    Answer, But Now, Yeah, I’m Thinking I’m Back.
-                    <br />
-                    <small>11:13 PM</small>
-                  </Content>
-                </CardContent>
-                <CardContent hasTextAlign="right">
-                  <Media>
-                    <MediaContent>
-                      <Subtitle isPulled={'right'} isSize={6}>
-                        @elmarto
-                      </Subtitle>
-                    </MediaContent>
-                  </Media>
-                  <Content>
-                    People Keep Asking If I’m Back, And I Haven’t Really Had An
-                    Answer, But Now, Yeah, I’m Thinking I’m Back.
-                    <br />
-                    <small>11:15 PM</small>
-                  </Content>
-                </CardContent>
-                <CardContent hasTextAlign="left">
-                  <Media>
-                    <MediaContent>
-                      <Subtitle isSize={6}>@johnwick</Subtitle>
-                    </MediaContent>
-                  </Media>
-                  <Content>
-                    People Keep Asking If I’m Back, And I Haven’t Really Had An
-                    Answer, But Now, Yeah, I’m Thinking I’m Back.
-                    <br />
-                    <small>11:18 PM</small>
-                  </Content>
-                </CardContent>
+                {isLoading ? (
+                  <div>Loading ...</div>
+                ) : (
+                  <div>
+                    {fullTalk.messages &&
+                      fullTalk.messages.map((message) => (
+                        //make alignment based if author is user
+                        <CardContent key={message.uuid} hasTextAlign="left">
+                          <Content>
+                            {message.actualMessage}
+                            <br />
+                            <Subtitle isSize={6} className="username">
+                              @{message.author.userName} -
+                              <small> {message.createdAt}</small>
+                            </Subtitle>
+                          </Content>
+                        </CardContent>
+                      ))}
+                  </div>
+                )}
               </Card>
               <Field isHorizontal className="message-box">
                 <FieldBody>
                   <Field>
                     <Control>
-                      <TextArea placeholder="Explain why 42 is the answer to the Ultimate Question of Life, the Universe and Everything" />
+                      <TextArea
+                        value={newMessage}
+                        onChange={(event) => setNewMessage(event.target.value)}
+                        placeholder="Explain why 42 is the answer to the Ultimate Question of Life, the Universe and Everything"
+                      />
                     </Control>
                   </Field>
                 </FieldBody>
@@ -123,10 +157,15 @@ const Talk = (props) => {
                 <FieldBody>
                   <Field>
                     <Control>
-                      <Button isColor="secondary" className="sync-button">
+                      <Button
+                        onClick={() => setReloadPage(true)}
+                        isColor="secondary"
+                        className="sync-button">
                         <FontAwesomeIcon icon={faSync} />
                       </Button>
-                      <Button isColor="primary">Submit</Button>
+                      <Button onClick={() => setPost(true)} isColor="primary">
+                        Submit
+                      </Button>
                     </Control>
                   </Field>
                 </FieldBody>
