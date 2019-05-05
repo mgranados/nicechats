@@ -82,6 +82,9 @@ const Talk = (props) => {
         setIsLoading(false);
       }
       getTalk();
+      if (reloadPage) {
+        setReloadPage(false);
+      }
     },
     [userSession, reloadPage],
   );
@@ -98,9 +101,14 @@ const Talk = (props) => {
         );
         if (response.status === 200) {
           const responseReady = await response.json();
+          setReloadPage(true);
         }
       }
-      postMessage();
+      if (post) {
+        postMessage();
+      }
+      setNewMessage('');
+      setPost(false);
     },
     [post],
   );
@@ -130,8 +138,10 @@ const Talk = (props) => {
                             {message.actualMessage}
                             <br />
                             <Subtitle isSize={6} className="username">
-                              @{message.author.userName} -
-                              <small> {message.createdAt}</small>
+                              <small>
+                                @{message.author.userName} -
+                                {message.createdAt}
+                              </small>
                             </Subtitle>
                           </Content>
                         </CardContent>

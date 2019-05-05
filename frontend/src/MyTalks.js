@@ -90,11 +90,6 @@ const MyTalks = (props) => {
                     <Link to={`t/${talk.shortId}`}>
                       <Card>
                         <CardContent>
-                          <Media>
-                            <MediaContent>
-                              <Title isSize={5}>John Wick 123</Title>
-                            </MediaContent>
-                          </Media>
                           <Content>
                             {talk.subject}
                             <br />
