@@ -64,4 +64,10 @@ userSchema.methods.public = function public() {
   };
 };
 
+userSchema.methods.participantFormat = function participantFormat() {
+  return {
+    userName: this.userName,
+  };
+};
+
 module.exports = mongoose.model('User', userSchema);

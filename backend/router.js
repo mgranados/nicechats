@@ -99,7 +99,15 @@ router.get('/chats/recent', async (ctx) => {
     .populate('participants')
     .limit(5);
   ctx.assert(foundChats, 404, 'No chats found');
-  ctx.body = foundChats;
+  const formattedChats = foundChats.map((chat) => {
+    const formattedChat = chat.listFormat();
+    formattedChat.participants = chat.participants.map((user) =>
+      user.participantFormat(),
+    );
+    return formattedChat;
+  });
+
+  ctx.body = formattedChats;
 });
 
 router.get('/chats/others', async (ctx) => {
@@ -116,7 +124,14 @@ router.get('/chats/others', async (ctx) => {
     .sort('-createdAt')
     .populate('participants');
   ctx.assert(foundChats, 404, 'No chats found');
-  ctx.body = foundChats;
+  const formattedChats = foundChats.map((chat) => {
+    const formattedChat = chat.listFormat();
+    formattedChat.participants = chat.participants.map((user) =>
+      user.participantFormat(),
+    );
+    return formattedChat;
+  });
+  ctx.body = formattedChats;
 });
 
 router.get('/chats/available', async (ctx) => {
@@ -126,7 +141,14 @@ router.get('/chats/available', async (ctx) => {
     .sort('-createdAt')
     .populate('participants');
   ctx.assert(foundChats, 404, 'No chats found');
-  ctx.body = foundChats;
+  const formattedChats = foundChats.map((chat) => {
+    const formattedChat = chat.listFormat();
+    formattedChat.participants = chat.participants.map((user) =>
+      user.participantFormat(),
+    );
+    return formattedChat;
+  });
+  ctx.body = formattedChats;
 });
 
 router.get('/chats/me', async (ctx) => {
@@ -136,8 +158,8 @@ router.get('/chats/me', async (ctx) => {
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data }).populate('chats');
   ctx.assert(authedUser, 404, 'No user logged');
-
-  ctx.body = authedUser.chats;
+  const formattedChats = authedUser.chats.map((c) => c.listFormat());
+  ctx.body = formattedChats;
 });
 
 router.get('/chats/:uuid/messages', async (ctx) => {
@@ -157,10 +179,14 @@ router.get('/chats/:uuid/messages', async (ctx) => {
     });
   ctx.assert(foundChat, 404, 'No chat found');
 
-  //const found = find(foundChat.participants, authedUser.toJSON());
-  //ctx.assert(found, 403, 'Not part of chat');
-
-  ctx.body = foundChat;
+  const formattedParticipants = foundChat.participants.map((p) =>
+    p.participantFormat(),
+  );
+  const formattedMessages = foundChat.messages.map((m) => m.chatFormat());
+  const formattedChat = foundChat.messageFormat();
+  formattedChat.messages = formattedMessages;
+  formattedChat.participants = formattedParticipants;
+  ctx.body = formattedChat;
 });
 
 router.post('/users', async (ctx) => {
@@ -201,29 +227,13 @@ router.get('/me', async (ctx) => {
   const { data } = ctx.state.user;
   const userFound = await User.findOne({ shortId: data }).populate('chats');
 
-  ctx.body = userFound;
-});
-
-router.post('/logout', async (ctx) => {
-  const { email, password, userName } = ctx.request.body;
-  const previousUser = await User.findOne({
-    $or: [{ email }, { userName }],
-  });
-
-  ctx.assert(!previousUser, 403, 'User exists');
-
-  const createdUser = await User.create({
-    email,
-    password,
-    userName,
-  });
-
-  ctx.body = createdUser;
+  ctx.body = userFound.public();
 });
 
 router.get('/users', async (ctx) => {
   const userList = await User.find({});
-  ctx.body = userList;
+  const formattedUserList = userList.map((u) => u.listFormat());
+  ctx.body = formattedUserList;
 });
 
 router.get('/users/:uuid', (ctx) => {
