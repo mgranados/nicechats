@@ -2,7 +2,7 @@ Next feature:
 
 * [x] logout (delete cookie)
 * [x] create a real chat
-* [ ] format public API
+* [x] format public API
 * [x] list all chats
 * [x] join chat if it is not yours not full (2)
 * [x] send messages! (reload page)
