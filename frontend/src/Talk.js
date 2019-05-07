@@ -62,13 +62,16 @@ const Talk = (props) => {
   const [userSession, setUserSession] = useState({
     isLogged: false,
     token: null,
+    userName: '',
   });
   useEffect(() => {
     const userToken = getCookie('token');
-    if (userToken) {
+    const userName = getCookie('userName');
+    if (userToken && userName) {
       setUserSession({
         isLogged: true,
         token: userToken,
+        userName: userName,
       });
     }
   }, []);
@@ -139,12 +142,21 @@ const Talk = (props) => {
           setPartOfChat(true);
         }
       }
+      // verify if not part of chat already
+      if (fullTalk && fullTalk.participants) {
+        fullTalk.participants.map((participant) => {
+          if (participant.userName === userSession.userName) {
+            setPartOfChat(true);
+          }
+        });
+      }
+
       if (joinChat) {
         joinChatAsync();
       }
       setJoinChat(false);
     },
-    [joinChat],
+    [joinChat, userSession, fullTalk],
   );
 
   return (

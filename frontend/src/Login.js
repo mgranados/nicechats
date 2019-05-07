@@ -91,6 +91,7 @@ const Login = () => {
                             if (response.status === 200) {
                               const responseReady = await response.json();
                               setCookie('token', responseReady.token, 3);
+                              setCookie('userName', responseReady.userName, 3);
                               window.location.href = '/my-talks';
                             }
                           }}>

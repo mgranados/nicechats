@@ -185,6 +185,7 @@ router.post('/login', async (ctx) => {
   const userLogged = await User.auth(email, password);
 
   ctx.body = {
+    userName: userLogged.userName,
     token: jwt.sign(
       {
         data: userLogged.shortId,
