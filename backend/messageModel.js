@@ -15,4 +15,13 @@ const messageSchema = new Schema(
   { timestamps: true },
 );
 
+messageSchema.methods.chatFormat = function chatFormat() {
+  return {
+    shortId: this.shortId,
+    actualMessage: this.actualMessage,
+    createdAt: this.createdAt,
+    author: this.author.participantFormat(),
+  };
+};
+
 module.exports = mongoose.model('Message', messageSchema);

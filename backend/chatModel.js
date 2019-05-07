@@ -15,4 +15,19 @@ const chatSchema = new Schema(
   { timestamps: true },
 );
 
+chatSchema.methods.listFormat = function listFormat() {
+  return {
+    subject: this.subject,
+    shortId: this.shortId,
+    createdAt: this.createdAt,
+  };
+};
+
+chatSchema.methods.messageFormat = function messageFormat() {
+  return {
+    subject: this.subject,
+    shortId: this.shortId,
+  };
+};
+
 module.exports = mongoose.model('Chat', chatSchema);

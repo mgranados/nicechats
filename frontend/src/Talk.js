@@ -64,6 +64,7 @@ const Talk = (props) => {
     token: null,
     userName: '',
   });
+
   useEffect(() => {
     const userToken = getCookie('token');
     const userName = getCookie('userName');
@@ -95,7 +96,9 @@ const Talk = (props) => {
         }
         setIsLoading(false);
       }
-      getTalk();
+      if (userSession.isLogged) {
+        getTalk();
+      }
       if (reloadPage) {
         setReloadPage(false);
       }
@@ -179,7 +182,7 @@ const Talk = (props) => {
                     {fullTalk.messages &&
                       fullTalk.messages.map((message) => (
                         //make alignment based if author is user
-                        <CardContent key={message.uuid} hasTextAlign="left">
+                        <CardContent key={message.shortId} hasTextAlign="left">
                           <Content>
                             {message.actualMessage}
                             <br />

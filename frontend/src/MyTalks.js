@@ -13,7 +13,7 @@ import {
   Title,
   Container,
 } from 'bloomer';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
@@ -34,6 +34,7 @@ const MyTalks = (props) => {
     isLogged: false,
     token: null,
   });
+  const [triedSession, setTriedSession] = useState(false);
   useEffect(() => {
     const userToken = getCookie('token');
     if (userToken) {
@@ -41,6 +42,8 @@ const MyTalks = (props) => {
         isLogged: true,
         token: userToken,
       });
+    } else {
+      setTriedSession(true);
     }
   }, []);
 
@@ -64,6 +67,13 @@ const MyTalks = (props) => {
     [userSession],
   );
 
+  if (triedSession && !userSession.isLogged) {
+    return <Redirect to="/login" />;
+  }
+
+  if (!triedSession && !userSession.isLogged) {
+    return <div>Loading ...</div>;
+  }
   //render list only
   return (
     <React.Fragment>

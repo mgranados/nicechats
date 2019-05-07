@@ -42,7 +42,7 @@ const NiceNavbar = (props) => {
       <NavbarMenu isActive={true}>
         <NavbarStart>
           <NavbarItem>
-            <Link to="/my-talks">My talks</Link>
+            {props.isAuthed && <Link to="/my-talks">My talks</Link>}
           </NavbarItem>
           <NavbarItem>
             <Link to="/talks">All talks</Link>
