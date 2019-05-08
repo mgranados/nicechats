@@ -7,6 +7,7 @@ Next feature:
 * [x] join chat if it is not yours not full (2)
 * [x] send messages! (reload page)
 * [ ] establish credit usage
+* [ ] allow signup view
 * ALPHA
 * [ ] refill credit with stripe
 * [ ] /me and update profile

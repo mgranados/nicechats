@@ -31,6 +31,7 @@ router.post('/chats', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data });
+  ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
 
   const { subject } = ctx.request.body;
   const createdChat = await Chat.create({
@@ -54,10 +55,11 @@ router.post('/chats/:uuid', async (ctx) => {
     shortId: uuid,
   });
   ctx.assert(foundChat, 404, 'No chat found');
+  ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
   foundChat.participants.push(authedUser);
+  await foundChat.save();
   authedUser.chats.push(foundChat);
   await authedUser.save();
-  await foundChat.save();
   ctx.body = foundChat;
 });
 

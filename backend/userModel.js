@@ -17,6 +17,7 @@ const userSchema = new Schema(
     userName: { type: String },
     country: { type: String },
     description: { type: String },
+    balance: { type: Number, default: 0 },
     chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
   },
@@ -60,6 +61,7 @@ userSchema.methods.public = function public() {
     email: this.email,
     userName: this.userName,
     uuid: this.uuid,
+    balance: this.balance,
     createdAt: this.createdAt,
   };
 };
