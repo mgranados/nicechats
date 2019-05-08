@@ -85,10 +85,10 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   await newMessage.save();
 
   foundChat.messages.push(newMessage);
-  authedUser.messages.push(newMessage);
-
-  await authedUser.save();
   await foundChat.save();
+
+  authedUser.messages.push(newMessage);
+  await authedUser.save();
 
   ctx.body = foundChat;
 });
@@ -205,7 +205,7 @@ router.post('/users', async (ctx) => {
     userName,
   });
 
-  ctx.body = createdUser;
+  ctx.body = createdUser.public();
 });
 
 router.post('/login', async (ctx) => {

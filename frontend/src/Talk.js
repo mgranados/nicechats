@@ -8,8 +8,6 @@ import {
   Subtitle,
   Card,
   CardContent,
-  Media,
-  MediaContent,
   Columns,
   Column,
   Hero,
@@ -104,7 +102,7 @@ const Talk = (props) => {
         setReloadPage(false);
       }
     },
-    [userSession, reloadPage],
+    [userSession, reloadPage, props.match.params.id],
   );
 
   const [newMessage, setNewMessage] = useState('');
@@ -118,7 +116,6 @@ const Talk = (props) => {
           userSession.token,
         );
         if (response.status === 200) {
-          const responseReady = await response.json();
           setReloadPage(true);
         }
       }
@@ -128,7 +125,7 @@ const Talk = (props) => {
       setNewMessage('');
       setPost(false);
     },
-    [post],
+    [post, props.match.params.id, userSession.token],
   );
 
   const [partOfChat, setPartOfChat] = useState(false);
@@ -150,7 +147,6 @@ const Talk = (props) => {
           userSession.token,
         );
         if (response.status === 200) {
-          const responseReady = await response.json();
           setReloadPage(true);
           setPartOfChat(true);
         } else if (response.status === 402) {
@@ -173,7 +169,7 @@ const Talk = (props) => {
       }
       setJoinChat(false);
     },
-    [joinChat, userSession, fullTalk],
+    [joinChat, userSession, fullTalk, props.match.params.id],
   );
 
   return (

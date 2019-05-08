@@ -6,8 +6,6 @@ import {
   Button,
   Card,
   CardContent,
-  Media,
-  MediaContent,
   Hero,
   HeroHeader,
   Title,
