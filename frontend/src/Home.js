@@ -66,10 +66,11 @@ const Home = (props) => {
         </HeroHeader>
         <HeroBody>
           <Container hasTextAlign="centered">
-            <Title>Discuss topics that matter to you!</Title>
+            <Title>Have Nice Talks!</Title>
             <Subtitle>
-              All chats created by users just like you,{' '}
-              <strong>ready for you </strong>to hop on and have a good time
+              Create and join meaninful conversations,{' '}
+              <strong>you decide the subjects</strong> and find peers that are
+              interested as well
             </Subtitle>
           </Container>
         </HeroBody>

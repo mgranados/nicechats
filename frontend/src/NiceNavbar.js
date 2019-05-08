@@ -34,7 +34,7 @@ const NiceNavbar = (props) => {
       <NavbarBrand>
         <NavbarItem>
           <Link to="/">
-            <h2>💬 Nice talks</h2>
+            <h2>💬 Nice talks \beta\</h2>
           </Link>
         </NavbarItem>
         <NavbarBurger />
