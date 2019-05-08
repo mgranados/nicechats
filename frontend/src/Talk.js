@@ -18,6 +18,7 @@ import {
   Control,
   Button,
   Container,
+  Help,
 } from 'bloomer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSync} from '@fortawesome/free-solid-svg-icons';
@@ -132,6 +133,15 @@ const Talk = (props) => {
 
   const [partOfChat, setPartOfChat] = useState(false);
   const [joinChat, setJoinChat] = useState(false);
+  const [errorJoining, setErrorJoining] = useState('');
+
+  let errorLabel;
+  if (errorJoining) {
+    errorLabel = <Help isColor="danger">{errorJoining} </Help>;
+  } else {
+    errorLabel = <span />;
+  }
+
   useEffect(
     () => {
       async function joinChatAsync() {
@@ -143,6 +153,10 @@ const Talk = (props) => {
           const responseReady = await response.json();
           setReloadPage(true);
           setPartOfChat(true);
+        } else if (response.status === 402) {
+          setErrorJoining('You do not have enough funds');
+        } else {
+          setErrorJoining('Error joining');
         }
       }
       // verify if not part of chat already
@@ -251,6 +265,7 @@ const Talk = (props) => {
                   </FieldBody>
                 </Field>
               )}
+              {errorLabel}
             </Column>
           </Columns>
         </Container>

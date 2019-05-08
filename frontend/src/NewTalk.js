@@ -102,8 +102,10 @@ const NewTalk = () => {
                               window.location.href = `/t/${
                                 responseReady.shortId
                               }`;
+                            } else if (response.status === 402) {
+                              setErrorCreating('You do not have enough funds');
                             } else {
-                              setErrorCreating('Error creating right now');
+                              setErrorCreating('Error creating your Talk');
                             }
                           }}>
                           Create
