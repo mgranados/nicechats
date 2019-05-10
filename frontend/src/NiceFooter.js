@@ -10,7 +10,10 @@ const NiceFooter = () => {
           <Columns>
             <Column isSize={12}>
               <p>
-                Made with ☕️ by <a>mgranados</a>
+                Made with ☕️ by{' '}
+                <a href="https://twitter.com/mgranados_" target="_blank">
+                  mgranados
+                </a>
               </p>
             </Column>
           </Columns>

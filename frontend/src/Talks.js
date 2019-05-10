@@ -105,13 +105,6 @@ const Talks = (props) => {
           )}
         </Container>
       </Section>
-      <Section>
-        <Container>
-          <Button isColor="primary" isOutlined>
-            More
-          </Button>
-        </Container>
-      </Section>
       <NiceFooter />
     </React.Fragment>
   );

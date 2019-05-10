@@ -57,10 +57,10 @@ const NiceNavbar = (props) => {
                   id="twitter"
                   data-social-network="Twitter"
                   data-social-action="tweet"
-                  data-social-target="http://nicetalks.co"
+                  data-social-target="https://beta.nicetalks.co"
                   target="_blank"
-                  href="https://twitter.com/intent/tweet?text=Nicetalks:
-                    having great conversations at&amp;url=http://nicetalks.co&amp;via=mgranados_">
+                  href="https://twitter.com/intent/tweet?text=Trying out Nice Talks beta:
+                    having great conversations at&amp;url=https://beta.nicetalks.co&amp;via=mgranados_">
                   <FontAwesomeIcon
                     icon={faTwitter}
                     className="a-lil-to-the-right"
