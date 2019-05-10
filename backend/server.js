@@ -16,9 +16,17 @@ app.use(compress());
 app.use(responseTime());
 app.use(logger());
 
-const mongoUrl = `mongodb://${process.env.MONGO_HOST}:${
-  process.env.MONGO_PORT
-}/${process.env.MONGO_DB}`;
+let mongoUrl;
+
+if (process.env.MONGO_USER) {
+  mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${
+    process.env.MONGO_HOST
+  }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+} else {
+  mongoUrl = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${
+    process.env.MONGO_DB
+  }`;
+}
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoUrl, { useNewUrlParser: true });
 
