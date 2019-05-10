@@ -18,24 +18,7 @@ import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
-
-const getTalks = async (route, userToken = '') => {
-  let response;
-  if (route === 'others') {
-    response = await fetch(`/v1/chats/others`, {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + userToken,
-      },
-    });
-  } else {
-    response = await fetch(`/v1/chats/available`, {
-      method: 'get',
-    });
-  }
-  return response;
-};
+import {getTalks} from './api';
 
 const Talks = (props) => {
   const [userSession, setUserSession] = useState({

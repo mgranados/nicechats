@@ -18,13 +18,7 @@ import {Link} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
-
-const getRecentTalks = async (route, userToken = '') => {
-  const response = await fetch(`/v1/chats/recent`, {
-    method: 'get',
-  });
-  return response;
-};
+import {getRecentTalks} from './api';
 
 const Home = (props) => {
   const [userSession, setUserSession] = useState({

@@ -22,40 +22,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
-
-const getTalkDetails = async (talkId, userToken) => {
-  const response = await fetch(`/v1/chats/${talkId}/messages`, {
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + userToken,
-    },
-  });
-  return response;
-};
-
-const postNewMessage = async (message, talkId, userToken) => {
-  const response = await fetch(`/v1/chats/${talkId}/messages`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + userToken,
-    },
-    body: JSON.stringify({message}),
-  });
-  return response;
-};
-
-const postJoinTalk = async (talkId, userToken) => {
-  const response = await fetch(`/v1/chats/${talkId}`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + userToken,
-    },
-  });
-  return response;
-};
+import {getTalkDetails, postNewMessage, postJoinTalk} from './api';
 
 const Talk = (props) => {
   const [userSession, setUserSession] = useState({

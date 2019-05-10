@@ -17,17 +17,8 @@ import {
   Container,
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
+import {signup} from './api';
 
-const signup = async (email, password, userName) => {
-  const response = await fetch(`/v1/users`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({email, password, userName}),
-  });
-  return response;
-};
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

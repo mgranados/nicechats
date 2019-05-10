@@ -15,17 +15,7 @@ import {Link, Redirect} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
-
-const getMyTalks = async (userToken) => {
-  const response = await fetch(`/v1/chats/me`, {
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + userToken,
-    },
-  });
-  return response;
-};
+import {getMyTalks} from './api';
 
 const MyTalks = (props) => {
   const [userSession, setUserSession] = useState({

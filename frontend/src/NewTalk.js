@@ -19,18 +19,7 @@ import {
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
-
-const createTalk = async (subject, userToken) => {
-  const response = await fetch(`/v1/chats`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + userToken,
-    },
-    body: JSON.stringify({subject}),
-  });
-  return response;
-};
+import {createTalk} from './api';
 
 const NewTalk = () => {
   const [userSession, setUserSession] = useState({
