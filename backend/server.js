@@ -21,7 +21,7 @@ let mongoUrl;
 if (process.env.MONGO_USER) {
   mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${
     process.env.MONGO_HOST
-  }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+  }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;
 } else {
   mongoUrl = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${
     process.env.MONGO_DB
