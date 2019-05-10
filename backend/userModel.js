@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 const { v4 } = require('uuid');
-const { generate } = require('shortId');
+const { generate } = require('shortid');
 const bcrypt = require('bcrypt');
 const assert = require('http-assert');
 
