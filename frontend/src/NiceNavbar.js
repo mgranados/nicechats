@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Home.scss';
 import {
   Navbar,
@@ -29,6 +29,8 @@ const NiceNavbar = (props) => {
   } else {
     sessionButton = <Link to="/login">Login</Link>;
   }
+  const [navActive, setNavActive] = useState(false);
+
   return (
     <Navbar style={{border: 'solid 1px #00D1B2', margin: '0'}}>
       <NavbarBrand>
@@ -37,9 +39,12 @@ const NiceNavbar = (props) => {
             <h2>💬 Nice talks \beta\</h2>
           </Link>
         </NavbarItem>
-        <NavbarBurger />
+        <NavbarBurger
+          isActive={navActive}
+          onClick={() => setNavActive(!navActive)}
+        />
       </NavbarBrand>
-      <NavbarMenu isActive={true}>
+      <NavbarMenu isActive={navActive}>
         <NavbarStart>
           <NavbarItem>
             {props.isAuthed && <Link to="/my-talks">My talks</Link>}

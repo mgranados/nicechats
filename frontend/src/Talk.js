@@ -46,54 +46,48 @@ const Talk = (props) => {
   const [fullTalk, setFullTalk] = useState({});
   const [reloadPage, setReloadPage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(
-    () => {
-      setIsLoading(true);
-      async function getTalk() {
-        const response = await getTalkDetails(
-          props.match.params.id,
-          userSession.token,
-        );
-        if (response.status === 200) {
-          const responseReady = await response.json();
-          setFullTalk(responseReady);
-        } else {
-          setFullTalk([]);
-        }
-        setIsLoading(false);
+  useEffect(() => {
+    setIsLoading(true);
+    async function getTalk() {
+      const response = await getTalkDetails(
+        props.match.params.id,
+        userSession.token,
+      );
+      if (response.status === 200) {
+        const responseReady = await response.json();
+        setFullTalk(responseReady);
+      } else {
+        setFullTalk([]);
       }
-      if (userSession.isLogged) {
-        getTalk();
-      }
-      if (reloadPage) {
-        setReloadPage(false);
-      }
-    },
-    [userSession, reloadPage, props.match.params.id],
-  );
+      setIsLoading(false);
+    }
+    if (userSession.isLogged) {
+      getTalk();
+    }
+    if (reloadPage) {
+      setReloadPage(false);
+    }
+  }, [userSession, reloadPage, props.match.params.id]);
 
   const [newMessage, setNewMessage] = useState('');
   const [post, setPost] = useState(false);
-  useEffect(
-    () => {
-      async function postMessage() {
-        const response = await postNewMessage(
-          newMessage,
-          props.match.params.id,
-          userSession.token,
-        );
-        if (response.status === 200) {
-          setReloadPage(true);
-        }
+  useEffect(() => {
+    async function postMessage() {
+      const response = await postNewMessage(
+        newMessage,
+        props.match.params.id,
+        userSession.token,
+      );
+      if (response.status === 200) {
+        setReloadPage(true);
       }
-      if (post) {
-        postMessage();
-      }
-      setNewMessage('');
-      setPost(false);
-    },
-    [post, props.match.params.id, userSession.token],
-  );
+    }
+    if (post) {
+      postMessage();
+    }
+    setNewMessage('');
+    setPost(false);
+  }, [post, props.match.params.id, userSession.token]);
 
   const [partOfChat, setPartOfChat] = useState(false);
   const [joinChat, setJoinChat] = useState(false);
@@ -106,38 +100,35 @@ const Talk = (props) => {
     errorLabel = <span />;
   }
 
-  useEffect(
-    () => {
-      async function joinChatAsync() {
-        const response = await postJoinTalk(
-          props.match.params.id,
-          userSession.token,
-        );
-        if (response.status === 200) {
-          setReloadPage(true);
+  useEffect(() => {
+    async function joinChatAsync() {
+      const response = await postJoinTalk(
+        props.match.params.id,
+        userSession.token,
+      );
+      if (response.status === 200) {
+        setReloadPage(true);
+        setPartOfChat(true);
+      } else if (response.status === 402) {
+        setErrorJoining('You do not have enough funds');
+      } else {
+        setErrorJoining('Error joining');
+      }
+    }
+    // verify if not part of chat already
+    if (fullTalk && fullTalk.participants) {
+      fullTalk.participants.map((participant) => {
+        if (participant.userName === userSession.userName) {
           setPartOfChat(true);
-        } else if (response.status === 402) {
-          setErrorJoining('You do not have enough funds');
-        } else {
-          setErrorJoining('Error joining');
         }
-      }
-      // verify if not part of chat already
-      if (fullTalk && fullTalk.participants) {
-        fullTalk.participants.map((participant) => {
-          if (participant.userName === userSession.userName) {
-            setPartOfChat(true);
-          }
-        });
-      }
+      });
+    }
 
-      if (joinChat) {
-        joinChatAsync();
-      }
-      setJoinChat(false);
-    },
-    [joinChat, userSession, fullTalk, props.match.params.id],
-  );
+    if (joinChat) {
+      joinChatAsync();
+    }
+    setJoinChat(false);
+  }, [joinChat, userSession, fullTalk, props.match.params.id]);
 
   return (
     <React.Fragment>
@@ -165,8 +156,7 @@ const Talk = (props) => {
                             <br />
                             <Subtitle isSize={6} className="username">
                               <small>
-                                @{message.author.userName} -
-                                {message.createdAt}
+                                @{message.author.userName} -{message.createdAt}
                               </small>
                             </Subtitle>
                           </Content>
