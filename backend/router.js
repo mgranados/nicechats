@@ -193,7 +193,6 @@ router.get('/chats/:uuid/messages', async (ctx) => {
 
 router.post('/users', async (ctx) => {
   const { email, password, userName } = ctx.request.body;
-  console.log('=> registering ');
   const previousUser = await User.findOne({
     $or: [{ email }, { userName }],
   });
@@ -204,6 +203,7 @@ router.post('/users', async (ctx) => {
     email,
     password,
     userName,
+    newPasswordRequired: true,
   });
 
   ctx.body = createdUser.public();
@@ -215,6 +215,7 @@ router.post('/login', async (ctx) => {
 
   ctx.body = {
     userName: userLogged.userName,
+    newPasswordRequired: userLogged.newPasswordRequired,
     token: jwt.sign(
       {
         data: userLogged.shortId,

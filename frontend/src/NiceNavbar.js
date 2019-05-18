@@ -31,14 +31,20 @@ const NiceNavbar = (props) => {
   }
   const [navActive, setNavActive] = useState(false);
 
+  let rootButton;
+  if (!props.updatingPass) {
+    rootButton = (
+      <Link to="/">
+        <h2>💬 Nice talks \beta\</h2>
+      </Link>
+    );
+  } else {
+    rootButton = <h2>💬 Nice talks \beta\</h2>;
+  }
   return (
     <Navbar style={{border: 'solid 1px #00D1B2', margin: '0'}}>
       <NavbarBrand>
-        <NavbarItem>
-          <Link to="/">
-            <h2>💬 Nice talks \beta\</h2>
-          </Link>
-        </NavbarItem>
+        <NavbarItem>{rootButton}</NavbarItem>
         <NavbarBurger
           isActive={navActive}
           onClick={() => setNavActive(!navActive)}
@@ -47,10 +53,12 @@ const NiceNavbar = (props) => {
       <NavbarMenu isActive={navActive}>
         <NavbarStart>
           <NavbarItem>
-            {props.isAuthed && <Link to="/my-talks">My talks</Link>}
+            {props.isAuthed && !props.updatingPass && (
+              <Link to="/my-talks">My talks</Link>
+            )}
           </NavbarItem>
           <NavbarItem>
-            <Link to="/talks">All talks</Link>
+            {!props.updatingPass && <Link to="/talks">All talks</Link>}
           </NavbarItem>
         </NavbarStart>
         <NavbarEnd>

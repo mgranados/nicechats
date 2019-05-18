@@ -62,7 +62,7 @@ const Home = (props) => {
           <Container hasTextAlign="centered">
             <Title>Have Nice Talks!</Title>
             <Subtitle>
-              Create and join meaninful conversations,{' '}
+              Create and join meaningful conversations,{' '}
               <strong>you decide the subjects</strong> and find peers that are
               interested as well
             </Subtitle>

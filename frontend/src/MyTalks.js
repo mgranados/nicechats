@@ -21,6 +21,7 @@ const MyTalks = (props) => {
   const [userSession, setUserSession] = useState({
     isLogged: false,
     token: null,
+    newPasswordRequired: false,
   });
   const [triedSession, setTriedSession] = useState(false);
   useEffect(() => {
@@ -37,23 +38,20 @@ const MyTalks = (props) => {
 
   const [myTalks, setMyTalks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(
-    () => {
-      setIsLoading(true);
-      async function getTalks() {
-        const response = await getMyTalks(userSession.token);
-        if (response.status === 200) {
-          const responseReady = await response.json();
-          setMyTalks(responseReady);
-        } else {
-          setMyTalks([]);
-        }
-        setIsLoading(false);
+  useEffect(() => {
+    setIsLoading(true);
+    async function getTalks() {
+      const response = await getMyTalks(userSession.token);
+      if (response.status === 200) {
+        const responseReady = await response.json();
+        setMyTalks(responseReady);
+      } else {
+        setMyTalks([]);
       }
-      getTalks();
-    },
-    [userSession],
-  );
+      setIsLoading(false);
+    }
+    getTalks();
+  }, [userSession]);
 
   if (triedSession && !userSession.isLogged) {
     return <Redirect to="/login" />;

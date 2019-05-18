@@ -10,7 +10,11 @@ Next feature:
 - [x] allow signup view
 
 - [x] Show 401 error while login
-- [ ] Allow enter to submit login
+- [x] Allow enter to submit login
+- [ ] endpoint to register w invite
+- [ ] update password after login
+- [ ] update password after login view
+- [ ] more value w balance
 - [ ] refill credit with stripe
 - [ ] /me and update profile
 - [ ] signup

@@ -17,6 +17,7 @@ const userSchema = new Schema(
     userName: { type: String },
     country: { type: String },
     description: { type: String },
+    newPasswordRequired: { type: Boolean, default: false },
     balance: { type: Number, default: 0 },
     chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
@@ -63,6 +64,7 @@ userSchema.methods.public = function public() {
     uuid: this.uuid,
     balance: this.balance,
     createdAt: this.createdAt,
+    newPasswordRequired: this.newPasswordRequired,
   };
 };
 
