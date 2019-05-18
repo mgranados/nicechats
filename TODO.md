@@ -14,6 +14,8 @@ Next feature:
 - [x] endpoint to register w invite
 - [ ] update password after login endpoint
 - [x] update password after login view
+
+- [x] update server for new ssh
 - [ ] more value w balance
 - [ ] refill credit with stripe
 - [ ] /me and update profile
