@@ -14,6 +14,7 @@ import {
   Button,
   HeroBody,
   Title,
+  Help,
   Container,
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
@@ -24,6 +25,13 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
+  let errorLabel;
+  if (loginError) {
+    errorLabel = <Help isColor="white">{loginError} </Help>;
+  }
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -75,16 +83,24 @@ const Login = () => {
                   <FieldBody>
                     <Field>
                       <Control>
+                        {errorLabel}
                         <Button
                           isColor="primary"
+                          isLoading={loading}
                           onClick={async () => {
+                            setLoading(true);
                             const response = await login(email, password);
                             if (response.status === 200) {
                               const responseReady = await response.json();
                               setCookie('token', responseReady.token, 3);
                               setCookie('userName', responseReady.userName, 3);
                               window.location.href = '/my-talks';
+                            } else if (response.status === 401) {
+                              setLoginError('Incorrect password');
+                            } else if (response.status === 404) {
+                              setLoginError('That email does not exist');
                             }
+                            setLoading(false);
                           }}>
                           Submit
                         </Button>

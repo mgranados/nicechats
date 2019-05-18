@@ -193,6 +193,7 @@ router.get('/chats/:uuid/messages', async (ctx) => {
 
 router.post('/users', async (ctx) => {
   const { email, password, userName } = ctx.request.body;
+  console.log('=> registering ');
   const previousUser = await User.findOne({
     $or: [{ email }, { userName }],
   });
