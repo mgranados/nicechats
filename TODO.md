@@ -11,9 +11,9 @@ Next feature:
 
 - [x] Show 401 error while login
 - [x] Allow enter to submit login
-- [ ] endpoint to register w invite
-- [ ] update password after login
-- [ ] update password after login view
+- [x] endpoint to register w invite
+- [ ] update password after login endpoint
+- [x] update password after login view
 - [ ] more value w balance
 - [ ] refill credit with stripe
 - [ ] /me and update profile
