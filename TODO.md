@@ -12,12 +12,14 @@ Next feature:
 - [x] Show 401 error while login
 - [x] Allow enter to submit login
 - [x] endpoint to register w invite
-- [ ] update password after login endpoint
+- [x] update password after login endpoint
 - [x] update password after login view
 
 - [x] update server for new ssh
+- [ ] better UI for chats
 - [ ] more value w balance
 - [ ] refill credit with stripe
-- [ ] /me and update profile
+- [ ] /me view
+- [ ] update profile
 - [ ] signup
 - [ ] sockets
