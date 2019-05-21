@@ -19,13 +19,13 @@ import {
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
 import {setCookie, getCookie} from './utils';
-import {login} from './api';
+import {updatePassword} from './api';
 
 const NewPass = () => {
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
+  const [error, setError] = useState('');
   const [userSession, setUserSession] = useState({
     isLogged: false,
     token: null,
@@ -41,8 +41,8 @@ const NewPass = () => {
   }, []);
 
   let errorLabel;
-  if (loginError) {
-    errorLabel = <Help isColor="white">{loginError} </Help>;
+  if (error) {
+    errorLabel = <Help isColor="white">{error} </Help>;
   }
   return (
     <React.Fragment>
@@ -59,18 +59,23 @@ const NewPass = () => {
                   onSubmit={async (e) => {
                     e.preventDefault();
                     setLoading(true);
-                    setLoginError('');
-                    const response = await login(email, password);
-                    if (response.status === 200) {
-                      const responseReady = await response.json();
-                      setCookie('token', responseReady.token, 3);
-                      setCookie('userName', responseReady.userName, 3);
-                      window.location.href = '/my-talks';
-                    } else if (response.status === 401) {
-                      setLoginError('Incorrect password');
-                      setLoading(false);
-                    } else if (response.status === 404) {
-                      setLoginError('That email does not exist');
+                    setError('');
+                    if (password === passwordConfirmation) {
+                      const response = await updatePassword(
+                        userSession.token,
+                        password,
+                      );
+                      if (response.status === 200) {
+                        const responseReady = await response.json();
+                        setCookie('token', responseReady.token, 3);
+                        setCookie('userName', responseReady.userName, 3);
+                        window.location.href = '/my-talks';
+                      } else {
+                        setError('Error updating password');
+                        setLoading(false);
+                      }
+                    } else {
+                      setError('Passwords do not match');
                       setLoading(false);
                     }
                   }}>
@@ -82,8 +87,10 @@ const NewPass = () => {
                       <Field>
                         <Control isExpanded>
                           <Input
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
                             type="password"
                             placeholder="HopeIts4G00dOn3"
                           />
@@ -99,10 +106,10 @@ const NewPass = () => {
                       <Field>
                         <Control isExpanded>
                           <Input
-                            value={password}
+                            value={passwordConfirmation}
                             type="password"
                             onChange={(event) =>
-                              setPassword(event.target.value)
+                              setPasswordConfirmation(event.target.value)
                             }
                             placeholder="Same as the one that's up there"
                           />

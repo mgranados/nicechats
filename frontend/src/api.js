@@ -22,6 +22,18 @@ export const login = async (email, password) => {
   return response;
 };
 
+export const updatePassword = async (userToken, password) => {
+  const response = await fetch(`${apiUrl}/v1/users/update-password`, {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+    body: JSON.stringify({password}),
+  });
+  return response;
+};
+
 export const getMyTalks = async (userToken) => {
   const response = await fetch(`${apiUrl}/v1/chats/me`, {
     method: 'get',

@@ -240,8 +240,16 @@ router.get('/users', async (ctx) => {
   ctx.body = formattedUserList;
 });
 
-router.get('/users/:uuid', (ctx) => {
-  ctx.body = 'User detail';
+router.put('/users/update-password', async (ctx) => {
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { password: newPassword } = ctx.request.body;
+  const { data } = ctx.state.user;
+  const userToUpdate = await User.findOne({ shortId: data });
+
+  userToUpdate.password = newPassword;
+  userToUpdate.newPasswordRequired = false;
+  await userToUpdate.save();
+  ctx.body = userToUpdate.public();
 });
 
 module.exports = router;

@@ -45,7 +45,7 @@ userSchema.pre('save', function(next) {
 
 userSchema.statics.auth = async function(email, password) {
   assert(email, 403, 'Email not provided');
-  assert(password, 403, 'password not provided');
+  assert(password, 403, 'Pass not provided');
   const authEmail = email.toLowerCase();
 
   const user = await this.findOne({ email: authEmail });
