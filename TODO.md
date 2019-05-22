@@ -16,7 +16,7 @@ Next feature:
 - [x] update password after login view
 
 - [x] update server for new ssh
-- [ ] better UI for chats
+- [x] better UI for chats
 - [ ] more value w balance
 - [ ] refill credit with stripe
 - [ ] /me view
