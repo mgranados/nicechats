@@ -23,6 +23,7 @@ import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
 import {getTalkDetails, postNewMessage, postJoinTalk} from './api';
+import moment from 'moment';
 
 const Talk = (props) => {
   const [userSession, setUserSession] = useState({
@@ -142,26 +143,36 @@ const Talk = (props) => {
           <Columns>
             <Column isSize={6} isOffset={3}>
               <Subtitle>{fullTalk.subject}</Subtitle>
-              <Card>
+              <Card className="no-border">
                 {isLoading ? (
                   <div>Loading ...</div>
                 ) : (
                   <div>
                     {fullTalk.messages &&
-                      fullTalk.messages.map((message) => (
-                        //make alignment based if author is user
-                        <CardContent key={message.shortId} hasTextAlign="left">
-                          <Content>
-                            {message.actualMessage}
-                            <br />
-                            <Subtitle isSize={6} className="username">
-                              <small>
-                                @{message.author.userName} -{message.createdAt}
-                              </small>
-                            </Subtitle>
-                          </Content>
-                        </CardContent>
-                      ))}
+                      fullTalk.messages.map((message) => {
+                        let rightOrLeft = 'to-the-left';
+                        if (message.author.userName === userSession.userName) {
+                          rightOrLeft = 'to-the-right';
+                        }
+                        return (
+                          //make alignment based if author is user
+                          <CardContent
+                            className={rightOrLeft}
+                            key={message.shortId}
+                            hasTextAlign="left">
+                            <Content className="message">
+                              {message.actualMessage}
+                              <br />
+                              <Subtitle isSize={6} className="username">
+                                <small>
+                                  @{message.author.userName} -
+                                  {moment(message.createdAt).fromNow()}
+                                </small>
+                              </Subtitle>
+                            </Content>
+                          </CardContent>
+                        );
+                      })}
                   </div>
                 )}
               </Card>
@@ -176,7 +187,7 @@ const Talk = (props) => {
                             onChange={(event) =>
                               setNewMessage(event.target.value)
                             }
-                            placeholder="Explain why 42 is the answer to the Ultimate Question of Life, the Universe and Everything"
+                            placeholder="Say something. Make it worth it."
                           />
                         </Control>
                       </Field>
