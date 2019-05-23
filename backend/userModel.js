@@ -68,6 +68,13 @@ userSchema.methods.public = function public() {
   };
 };
 
+userSchema.methods.listFormat = function listFormat() {
+  return {
+    userName: this.userName,
+    createdAt: this.createdAt,
+  };
+};
+
 userSchema.methods.participantFormat = function participantFormat() {
   return {
     userName: this.userName,
