@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import './Home.scss';
 import {
   Content,
@@ -37,27 +37,33 @@ const Talks = (props) => {
 
   const [talks, setTalks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(
-    () => {
-      setIsLoading(true);
-      async function getAvailableTalks(route, token) {
-        const response = await getTalks(route, token);
-        if (response.status === 200) {
-          const responseReady = await response.json();
-          setTalks(responseReady);
-        } else {
-          setTalks([]);
-        }
-        setIsLoading(false);
-      }
-      if (userSession.token) {
-        getAvailableTalks('others', userSession.token);
+  useEffect(() => {
+    setIsLoading(true);
+    async function getAvailableTalks(route, token) {
+      const response = await getTalks(route, token);
+      if (response.status === 200) {
+        const responseReady = await response.json();
+        setTalks(responseReady);
       } else {
-        getAvailableTalks('available');
+        setTalks([]);
       }
-    },
-    [userSession],
-  );
+      setIsLoading(false);
+    }
+    if (userSession.token) {
+      getAvailableTalks('others', userSession.token);
+    } else {
+      getAvailableTalks('available');
+    }
+  }, [userSession]);
+
+  let createTalkMaybe;
+  if (!talks || !talks.length) {
+    createTalkMaybe = (
+      <Fragment>
+        <h2>None found, start one yourself!</h2>
+      </Fragment>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -74,6 +80,7 @@ const Talks = (props) => {
             </Button>
           </Link>
           <Title>Latest chats</Title>
+          {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
           ) : (

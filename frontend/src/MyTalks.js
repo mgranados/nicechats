@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import './Home.scss';
 import {
   Content,
@@ -60,7 +60,16 @@ const MyTalks = (props) => {
   if (!triedSession && !userSession.isLogged) {
     return <div>Loading ...</div>;
   }
-  //render list only
+
+  let createTalkMaybe;
+  if (!myTalks || !myTalks.length) {
+    createTalkMaybe = (
+      <Fragment>
+        <h2>None found, start one yourself!</h2>
+      </Fragment>
+    );
+  }
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -76,6 +85,7 @@ const MyTalks = (props) => {
             </Button>
           </Link>
           <Title>Your chats</Title>
+          {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
           ) : (

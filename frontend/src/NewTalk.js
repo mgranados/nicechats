@@ -99,6 +99,8 @@ const NewTalk = () => {
                                 );
                               } else if (response.status === 422) {
                                 setErrorCreating('No subject provided');
+                              } else if (response.status === 403) {
+                                setErrorCreating('Please login first');
                               } else {
                                 setErrorCreating('Error creating your Talk');
                               }

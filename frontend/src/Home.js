@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import './Home.scss';
 import {
   Content,
+  Button,
   Section,
   Subtitle,
   Card,
@@ -52,6 +53,21 @@ const Home = (props) => {
     getHomeTalks();
   }, []);
 
+  let createTalkMaybe;
+  if (!recentTalks || !recentTalks.length) {
+    createTalkMaybe = (
+      <Fragment>
+        <h2>None found! Please start one yourself</h2>
+        <br />
+        <Link to="/new">
+          <Button isPulled="left" isColor="primary">
+            Create Talk
+          </Button>
+        </Link>
+      </Fragment>
+    );
+  }
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -72,6 +88,7 @@ const Home = (props) => {
       <Section>
         <Container>
           <Title>Recent Talks</Title>
+          {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
           ) : (
