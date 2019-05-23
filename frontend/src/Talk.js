@@ -81,6 +81,8 @@ const Talk = (props) => {
       );
       if (response.status === 200) {
         setReloadPage(true);
+      } else if (response.status === 422) {
+        setErrorJoining('Please write something');
       }
     }
     if (post) {
@@ -184,6 +186,7 @@ const Talk = (props) => {
                         <Control>
                           <TextArea
                             value={newMessage}
+                            required
                             onChange={(event) =>
                               setNewMessage(event.target.value)
                             }

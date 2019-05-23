@@ -56,54 +56,61 @@ const NewTalk = () => {
             <Columns>
               <Column isSize={6} isOffset={3}>
                 <Title>New talk</Title>
-                <Field isHorizontal>
-                  <FieldLabel isNormal>
-                    <Label style={{color: 'white'}}>Subject</Label>
-                  </FieldLabel>
-                  <FieldBody>
-                    <Field>
-                      <Control isExpanded>
-                        <TextArea
-                          value={subject}
-                          onChange={(event) => setSubject(event.target.value)}
-                          type="text"
-                          placeholder="Be expressive, the more detail the better"
-                        />
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
+                <form>
+                  <Field isHorizontal>
+                    <FieldLabel isNormal>
+                      <Label style={{color: 'white'}}>Subject</Label>
+                    </FieldLabel>
+                    <FieldBody>
+                      <Field>
+                        <Control isExpanded>
+                          <TextArea
+                            value={subject}
+                            required
+                            onChange={(event) => setSubject(event.target.value)}
+                            type="text"
+                            placeholder="Be expressive, the more detail the better"
+                          />
+                        </Control>
+                      </Field>
+                    </FieldBody>
+                  </Field>
 
-                <Field isHorizontal>
-                  <FieldLabel />
-                  <FieldBody>
-                    <Field>
-                      <Control>
-                        <Button
-                          isColor="primary"
-                          onClick={async () => {
-                            const response = await createTalk(
-                              subject,
-                              userSession.token,
-                            );
-                            if (response.status === 200) {
-                              const responseReady = await response.json();
-                              window.location.href = `/t/${
-                                responseReady.shortId
-                              }`;
-                            } else if (response.status === 402) {
-                              setErrorCreating('You do not have enough funds');
-                            } else {
-                              setErrorCreating('Error creating your Talk');
-                            }
-                          }}>
-                          Create
-                        </Button>
-                        {errorLabel}
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
+                  <Field isHorizontal>
+                    <FieldLabel />
+                    <FieldBody>
+                      <Field>
+                        <Control>
+                          <Button
+                            isColor="primary"
+                            onClick={async () => {
+                              const response = await createTalk(
+                                subject,
+                                userSession.token,
+                              );
+                              if (response.status === 200) {
+                                const responseReady = await response.json();
+                                window.location.href = `/t/${
+                                  responseReady.shortId
+                                }`;
+                              } else if (response.status === 402) {
+                                setErrorCreating(
+                                  'You do not have enough funds',
+                                );
+                              } else if (response.status === 422) {
+                                setErrorCreating('No subject provided');
+                              } else {
+                                setErrorCreating('Error creating your Talk');
+                              }
+                            }}>
+                            Create
+                          </Button>
+                          {errorLabel}
+                        </Control>
+                      </Field>
+                    </FieldBody>
+                  </Field>
+                </form>
               </Column>
             </Columns>
           </Container>

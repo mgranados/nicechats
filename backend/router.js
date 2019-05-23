@@ -34,6 +34,7 @@ router.post('/chats', async (ctx) => {
   ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
 
   const { subject } = ctx.request.body;
+  ctx.assert(subject, 422, 'No subject provided');
   const createdChat = await Chat.create({
     subject,
   });
@@ -76,6 +77,7 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   ctx.assert(foundChat, 404, 'No chat found');
 
   const { message } = ctx.request.body;
+  ctx.assert(message, 422, 'No message provided');
   const newMessage = await Message.create({
     actualMessage: message,
   });
