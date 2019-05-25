@@ -17,9 +17,10 @@ Next feature:
 
 - [x] update server for new ssh
 - [x] better UI for chats
-- [ ] more value w balance
-- [ ] refill credit with stripe
-- [ ] /me view
-- [ ] update profile
-- [ ] signup
-- [ ] sockets
+
+- [x] fix session bug
+- [ ] ui of chat lists
+- [ ] add number of notifs to Navbar
+- [ ] add new messages count to My Talks
+- [ ] add payments to add balance (transactions)
+- [ ] allow signup!

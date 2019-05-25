@@ -251,7 +251,18 @@ router.put('/users/update-password', async (ctx) => {
   userToUpdate.password = newPassword;
   userToUpdate.newPasswordRequired = false;
   await userToUpdate.save();
-  ctx.body = userToUpdate.public();
+
+  ctx.body = {
+    userName: userToUpdate.userName,
+    newPasswordRequired: userToUpdate.newPasswordRequired,
+    token: jwt.sign(
+      {
+        data: userToUpdate.shortId,
+        expiresIn: '7d',
+      },
+      process.env.JWT_SECRET,
+    ),
+  };
 });
 
 module.exports = router;
