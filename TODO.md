@@ -19,7 +19,7 @@ Next feature:
 - [x] better UI for chats
 
 - [x] fix session bug
-- [ ] ui of chat lists
+- [x] ui of chat lists
 - [ ] add number of notifs to Navbar
 - [ ] add new messages count to My Talks
 - [ ] add payments to add balance (transactions)

@@ -19,6 +19,7 @@ import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
 import {getTalks} from './api';
+import moment from 'moment';
 
 const Talks = (props) => {
   const [userSession, setUserSession] = useState({
@@ -89,19 +90,22 @@ const Talks = (props) => {
                 talks.map((talk) => (
                   <li key={talk.shortId}>
                     <Link to={`t/${talk.shortId}`}>
-                      <Card>
+                      <Card className="talk-listing">
                         <CardContent>
                           <Media>
                             <MediaContent>
-                              <Subtitle isSize={5}>
-                                {talk.participants[0].userName}
+                              <Subtitle className="subject" isSize={4}>
+                                {talk.subject}
                               </Subtitle>
                             </MediaContent>
                           </Media>
                           <Content>
-                            {talk.subject}
-                            <br />
-                            <small>{talk.createdAt}</small>
+                            <small>{moment(talk.createdAt).format('ll')}</small>
+                            <span
+                              className="is-pulled-right"
+                              hasTextAlign="right">
+                              {talk.participants[0].userName}
+                            </span>
                           </Content>
                         </CardContent>
                       </Card>

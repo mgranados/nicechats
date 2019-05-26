@@ -10,12 +10,16 @@ import {
   HeroHeader,
   Title,
   Container,
+  Subtitle,
+  MediaContent,
+  Media,
 } from 'bloomer';
 import {Link, Redirect} from 'react-router-dom';
 import NiceNavbar from './NiceNavbar';
 import NiceFooter from './NiceFooter';
 import {getCookie} from './utils';
 import {getMyTalks} from './api';
+import moment from 'moment';
 
 const MyTalks = (props) => {
   const [userSession, setUserSession] = useState({
@@ -94,12 +98,17 @@ const MyTalks = (props) => {
                 myTalks.map((talk) => (
                   <li key={talk.shortId}>
                     <Link to={`t/${talk.shortId}`}>
-                      <Card>
+                      <Card className="talk-listing">
                         <CardContent>
+                          <Media>
+                            <MediaContent>
+                              <Subtitle className="subject" isSize={4}>
+                                {talk.subject}
+                              </Subtitle>
+                            </MediaContent>
+                          </Media>
                           <Content>
-                            {talk.subject}
-                            <br />
-                            <small>{talk.createdAt}</small>
+                            <small>{moment(talk.createdAt).format('ll')}</small>
                           </Content>
                         </CardContent>
                       </Card>
