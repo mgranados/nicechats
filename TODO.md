@@ -22,5 +22,6 @@ Next feature:
 - [x] ui of chat lists
 - [ ] add number of notifs to Navbar
 - [ ] add new messages count to My Talks
+- [ ] email every reply
 - [ ] add payments to add balance (transactions)
 - [ ] allow signup!
