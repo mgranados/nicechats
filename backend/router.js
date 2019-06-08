@@ -160,9 +160,28 @@ router.get('/chats/me', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
 
   const { data } = ctx.state.user;
-  const authedUser = await User.findOne({ shortId: data }).populate('chats');
+  const authedUser = await User.findOne({ shortId: data }).populate({
+    path: 'chats',
+    populate: {
+      path: 'messages',
+    },
+  });
   ctx.assert(authedUser, 404, 'No user logged');
-  const formattedChats = authedUser.chats.map((c) => c.listFormat());
+  //const formattedChats1 = authedUser.chats.map((c) => c.listFormat());
+
+  const formattedChats = authedUser.chats.map((c) => {
+    let newDelivered = 0;
+    const messagesDelivered = c.messages.map((message) => {
+      if (!message.delivered) {
+        newDelivered++;
+      }
+      return message.delivered;
+    });
+    const formatted = c.listFormat();
+    formatted.newDelivered = newDelivered;
+    return formatted;
+  });
+
   ctx.body = formattedChats;
 });
 
@@ -190,6 +209,12 @@ router.get('/chats/:uuid/messages', async (ctx) => {
   const formattedChat = foundChat.messageFormat();
   formattedChat.messages = formattedMessages;
   formattedChat.participants = formattedParticipants;
+
+  const savedMessages = foundChat.messages.map((m) => {
+    m.delivered = true;
+    m.save();
+  });
+
   ctx.body = formattedChat;
 });
 
@@ -233,7 +258,19 @@ router.get('/me', async (ctx) => {
   const { data } = ctx.state.user;
   const userFound = await User.findOne({ shortId: data }).populate('chats');
 
-  ctx.body = userFound.public();
+  const undelivered = 0;
+  const undeliveredChats = userFound.chats.reduce((undelivered, c) => {
+    console.log('undelivered =>', undelivered);
+    console.log('c =>', c);
+    if (c.hasUndelivered()) {
+      return undelivered + 1;
+    } else {
+      return undelivered;
+    }
+  });
+  const user = userFound.public();
+  user.undelivered = undelivered;
+  ctx.body = user;
 });
 
 router.get('/users', async (ctx) => {

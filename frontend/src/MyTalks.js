@@ -104,6 +104,11 @@ const MyTalks = (props) => {
                             <MediaContent>
                               <Subtitle className="subject" isSize={4}>
                                 {talk.subject}
+                                {!!talk.newDelivered && (
+                                  <Button isColor="primary" isPulled="right">
+                                    {talk.newDelivered}
+                                  </Button>
+                                )}
                               </Subtitle>
                             </MediaContent>
                           </Media>

@@ -10,6 +10,8 @@ const messageSchema = new Schema(
     actualMessage: { type: String },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
     chat: { type: Schema.Types.ObjectId, ref: 'Chat' },
+    read: { type: Boolean, default: false },
+    delivered: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },
   { timestamps: true },

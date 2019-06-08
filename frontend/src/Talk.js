@@ -167,7 +167,7 @@ const Talk = (props) => {
                               <br />
                               <Subtitle isSize={6} className="username">
                                 <small>
-                                  @{message.author.userName} -
+                                  @{message.author.userName} ·{' '}
                                   {moment(message.createdAt).fromNow()}
                                 </small>
                               </Subtitle>
