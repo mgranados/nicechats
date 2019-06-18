@@ -74,11 +74,22 @@ const MyTalks = (props) => {
     );
   }
 
+  let notifs = 0;
+  if (myTalks && myTalks.length > 0) {
+    notifs = myTalks.reduce(
+      (deliveredNumber, talk) => deliveredNumber + talk.newDelivered,
+      0,
+    );
+  }
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar isAuthed={userSession.isLogged} />
+          <NiceNavbar
+            isAuthed={userSession.isLogged}
+            notifsDelivered={notifs}
+          />
         </HeroHeader>
       </Hero>
       <Section>

@@ -260,18 +260,17 @@ router.get('/me', async (ctx) => {
   const { data } = ctx.state.user;
   const userFound = await User.findOne({ shortId: data }).populate('chats');
 
-  const undelivered = 0;
-  const undeliveredChats = userFound.chats.reduce((undelivered, c) => {
-    console.log('undelivered =>', undelivered);
-    console.log('c =>', c);
-    if (c.hasUndelivered()) {
-      return undelivered + 1;
-    } else {
-      return undelivered;
-    }
+  let allMessagesDelivered = 0;
+  const formattedChats = userFound.chats.map((c) => {
+    const messagesDelivered = c.messages.map((message) => {
+      if (!message.delivered) {
+        allMessagesDelivered++;
+      }
+    });
   });
+
   const user = userFound.public();
-  user.undelivered = undelivered;
+  user.allMessagesDelivered = allMessagesDelivered;
   ctx.body = user;
 });
 
