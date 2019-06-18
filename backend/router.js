@@ -211,8 +211,10 @@ router.get('/chats/:uuid/messages', async (ctx) => {
   formattedChat.participants = formattedParticipants;
 
   const savedMessages = foundChat.messages.map((m) => {
-    m.delivered = true;
-    m.save();
+    if (authedUser.userName !== m.author.userName) {
+      m.delivered = true;
+      m.save();
+    }
   });
 
   ctx.body = formattedChat;
