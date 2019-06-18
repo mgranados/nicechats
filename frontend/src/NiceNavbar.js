@@ -54,14 +54,7 @@ const NiceNavbar = (props) => {
         <NavbarStart>
           <NavbarItem>
             {props.isAuthed && !props.updatingPass && (
-              <Link to="/my-talks">
-                My talks{' '}
-                {props.notifsDelivered && (
-                  <Button isSize="small" isColor="primary">
-                    {props.notifsDelivered}
-                  </Button>
-                )}
-              </Link>
+              <Link to="/my-talks">My talks </Link>
             )}
           </NavbarItem>
           <NavbarItem>

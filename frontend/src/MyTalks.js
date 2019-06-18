@@ -86,10 +86,7 @@ const MyTalks = (props) => {
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
         <HeroHeader>
-          <NiceNavbar
-            isAuthed={userSession.isLogged}
-            notifsDelivered={notifs}
-          />
+          <NiceNavbar isAuthed={userSession.isLogged} />
         </HeroHeader>
       </Hero>
       <Section>
@@ -99,7 +96,12 @@ const MyTalks = (props) => {
               Create Talk
             </Button>
           </Link>
-          <Title>Your chats</Title>
+          <Title>
+            Your chats{' '}
+            <Button isSize="medium" isColor="primary">
+              {notifs}
+            </Button>
+          </Title>
           {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
