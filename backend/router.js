@@ -32,6 +32,7 @@ router.post('/chats', async (ctx) => {
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data });
   ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
+  authedUser.balance = authedUser.balance - 1;
 
   const { subject } = ctx.request.body;
   ctx.assert(subject, 422, 'No subject provided');
@@ -55,8 +56,18 @@ router.post('/chats/:uuid', async (ctx) => {
   const foundChat = await Chat.findOne({
     shortId: uuid,
   });
+
   ctx.assert(foundChat, 404, 'No chat found');
+  for (participant in foundChat.participants) {
+    ctx.assert(
+      authedUser.userName === participant.userName,
+      409,
+      'Already part of chat',
+    );
+  }
+  ctx.assert(foundChat.participants.length <= 1, 422, 'Chat full');
   ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
+  authedUser.balance = authedUser.balance - 1;
   foundChat.participants.push(authedUser);
   await foundChat.save();
   authedUser.chats.push(foundChat);
