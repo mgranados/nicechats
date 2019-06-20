@@ -7,6 +7,7 @@ import Talks from './Talks';
 import MyTalks from './MyTalks';
 import Talk from './Talk';
 import NewTalk from './NewTalk';
+import AddFunds from './AddFunds';
 import NewPass from './NewPass';
 import NotFound from './NotFound';
 
@@ -19,6 +20,7 @@ const AppRouter = () => {
         <Route path="/signup" component={Signup} />
         <Route path="/talks" component={Talks} />
         <Route path="/new" component={NewTalk} />
+        <Route path="/add-funds" component={AddFunds} />
         <Route path="/update-password" component={NewPass} />
         <Route path="/my-talks" component={MyTalks} />
         <Route path="/t/:id" component={Talk} />
