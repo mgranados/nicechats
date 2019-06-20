@@ -186,11 +186,6 @@ router.get('/chats/me', async (ctx) => {
 });
 
 router.get('/chats/:uuid/messages', async (ctx) => {
-  // If no user token not possible to create a chat
-  ctx.assert(ctx.state.user, 403, 'No user set');
-  const { data } = ctx.state.user;
-  const authedUser = await User.findOne({ shortId: data });
-
   const { uuid } = ctx.params;
   const foundChat = await Chat.findOne({
     shortId: uuid,
@@ -201,6 +196,17 @@ router.get('/chats/:uuid/messages', async (ctx) => {
       populate: { path: 'author' },
     });
   ctx.assert(foundChat, 404, 'No chat found');
+  if (foundChat.participants.length > 1) {
+    ctx.assert(ctx.state.user, 403, 'No user set');
+    const { data } = ctx.state.user;
+    const authedUser = await User.findOne({ shortId: data });
+    const savedMessages = foundChat.messages.map((m) => {
+      if (authedUser.userName !== m.author.userName) {
+        m.delivered = true;
+        m.save();
+      }
+    });
+  }
 
   const formattedParticipants = foundChat.participants.map((p) =>
     p.participantFormat(),
@@ -209,14 +215,6 @@ router.get('/chats/:uuid/messages', async (ctx) => {
   const formattedChat = foundChat.messageFormat();
   formattedChat.messages = formattedMessages;
   formattedChat.participants = formattedParticipants;
-
-  const savedMessages = foundChat.messages.map((m) => {
-    if (authedUser.userName !== m.author.userName) {
-      m.delivered = true;
-      m.save();
-    }
-  });
-
   ctx.body = formattedChat;
 });
 

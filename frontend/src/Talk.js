@@ -22,6 +22,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
+import {Link} from 'react-router-dom';
 import {getTalkDetails, postNewMessage, postJoinTalk} from './api';
 import moment from 'moment';
 
@@ -62,9 +63,9 @@ const Talk = (props) => {
       }
       setIsLoading(false);
     }
-    if (userSession.isLogged) {
-      getTalk();
-    }
+
+    getTalk();
+
     if (reloadPage) {
       setReloadPage(false);
     }
@@ -133,6 +134,77 @@ const Talk = (props) => {
     setJoinChat(false);
   }, [joinChat, userSession, fullTalk, props.match.params.id]);
 
+  let talkActions;
+  if (userSession.isLogged) {
+    if (partOfChat) {
+      talkActions = (
+        <React.Fragment>
+          <Field isHorizontal className="message-box">
+            <FieldBody>
+              <Field>
+                <Control>
+                  <TextArea
+                    value={newMessage}
+                    required
+                    onChange={(event) => setNewMessage(event.target.value)}
+                    placeholder="Say something. Make it worth it."
+                  />
+                </Control>
+              </Field>
+            </FieldBody>
+          </Field>
+          <Field isHorizontal isPulled="right">
+            <FieldBody>
+              <Field>
+                <Control>
+                  <Button
+                    onClick={() => setReloadPage(true)}
+                    isColor="secondary"
+                    className="sync-button">
+                    <FontAwesomeIcon icon={faSync} />
+                  </Button>
+                  <Button onClick={() => setPost(true)} isColor="primary">
+                    Submit
+                  </Button>
+                </Control>
+              </Field>
+            </FieldBody>
+          </Field>
+        </React.Fragment>
+      );
+    } else {
+      talkActions = (
+        <Field isHorizontal isPulled="right">
+          <FieldBody>
+            <Field>
+              <Control>
+                <Button onClick={() => setJoinChat(true)} isColor="primary">
+                  Join Chat
+                </Button>
+              </Control>
+            </Field>
+          </FieldBody>
+        </Field>
+      );
+    }
+  } else {
+    talkActions = (
+      <Field isHorizontal>
+        <FieldBody>
+          <Field>
+            <Control>
+              <Link to="/login">
+                <Button isPulled="right" isColor="primary">
+                  Log In to Join Chat
+                </Button>
+              </Link>
+            </Control>
+          </Field>
+        </FieldBody>
+      </Field>
+    );
+  }
+
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -178,60 +250,7 @@ const Talk = (props) => {
                   </div>
                 )}
               </Card>
-              {partOfChat ? (
-                <React.Fragment>
-                  <Field isHorizontal className="message-box">
-                    <FieldBody>
-                      <Field>
-                        <Control>
-                          <TextArea
-                            value={newMessage}
-                            required
-                            onChange={(event) =>
-                              setNewMessage(event.target.value)
-                            }
-                            placeholder="Say something. Make it worth it."
-                          />
-                        </Control>
-                      </Field>
-                    </FieldBody>
-                  </Field>
-
-                  <Field isHorizontal isPulled="right">
-                    <FieldBody>
-                      <Field>
-                        <Control>
-                          <Button
-                            onClick={() => setReloadPage(true)}
-                            isColor="secondary"
-                            className="sync-button">
-                            <FontAwesomeIcon icon={faSync} />
-                          </Button>
-                          <Button
-                            onClick={() => setPost(true)}
-                            isColor="primary">
-                            Submit
-                          </Button>
-                        </Control>
-                      </Field>
-                    </FieldBody>
-                  </Field>
-                </React.Fragment>
-              ) : (
-                <Field isHorizontal isPulled="right">
-                  <FieldBody>
-                    <Field>
-                      <Control>
-                        <Button
-                          onClick={() => setJoinChat(true)}
-                          isColor="primary">
-                          Join Chat
-                        </Button>
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
-              )}
+              {talkActions}
               {errorLabel}
             </Column>
           </Columns>
