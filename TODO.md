@@ -24,5 +24,5 @@ Next feature:
 - [x] add new messages count to My Talks
 - [x] add delivered_to array instead of boolean
 - [ ] add payments to add balance (transactions)
-- [ ] allow signup!
+- [x] allow signup!
 - [ ] bug send first message

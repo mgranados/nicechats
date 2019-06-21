@@ -82,6 +82,7 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data });
+  ctx.assert(authedUser, 401, 'No user found');
 
   const { uuid } = ctx.params;
   const foundChat = await Chat.findOne({
@@ -99,12 +100,8 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   newMessage.deliveredTo.push(authedUser);
   newMessage.chat = foundChat;
   await newMessage.save();
-
-  foundChat.messages.push(newMessage);
-  await foundChat.save();
-
-  authedUser.messages.push(newMessage);
-  await authedUser.save();
+  await Chat.update({ shortId: uuid }, { $push: { messages: newMessage } });
+  await User.update({ shortId: data }, { $push: { messages: newMessage } });
 
   ctx.body = foundChat;
 });
