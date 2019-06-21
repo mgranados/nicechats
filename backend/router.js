@@ -46,6 +46,7 @@ router.post('/chats', async (ctx) => {
   ctx.body = createdChat;
 });
 
+// creating a message
 router.post('/chats/:uuid', async (ctx) => {
   // If no user token not possible to create a chat
   ctx.assert(ctx.state.user, 403, 'No user set');
@@ -75,6 +76,7 @@ router.post('/chats/:uuid', async (ctx) => {
   ctx.body = foundChat;
 });
 
+// creating a message via POST
 router.post('/chats/:uuid/messages', async (ctx) => {
   // If no user token not possible to create a chat
   ctx.assert(ctx.state.user, 403, 'No user set');
@@ -94,6 +96,7 @@ router.post('/chats/:uuid/messages', async (ctx) => {
   });
 
   newMessage.author = authedUser;
+  newMessage.deliveredTo.push(authedUser);
   newMessage.chat = foundChat;
   await newMessage.save();
 
@@ -175,6 +178,11 @@ router.get('/chats/me', async (ctx) => {
     path: 'chats',
     populate: {
       path: 'messages',
+      model: 'Message',
+      populate: {
+        path: 'deliveredTo',
+        model: 'User',
+      },
     },
   });
   ctx.assert(authedUser, 404, 'No user logged');
@@ -183,10 +191,13 @@ router.get('/chats/me', async (ctx) => {
   const formattedChats = authedUser.chats.map((c) => {
     let newDelivered = 0;
     const messagesDelivered = c.messages.map((message) => {
-      if (!message.delivered) {
-        newDelivered++;
-      }
-      return message.delivered;
+      let delivered = false;
+      message.deliveredTo.forEach((user) => {
+        if (user.userName === authedUser.userName) {
+          delivered = true;
+        }
+      });
+      if (!delivered) newDelivered++;
     });
     const formatted = c.listFormat();
     formatted.newDelivered = newDelivered;
@@ -204,16 +215,31 @@ router.get('/chats/:uuid/messages', async (ctx) => {
     .populate('participants')
     .populate({
       path: 'messages',
-      populate: { path: 'author' },
+      populate: [
+        { path: 'author' },
+        {
+          path: 'deliveredTo',
+          model: 'User',
+        },
+      ],
     });
   ctx.assert(foundChat, 404, 'No chat found');
-  if (foundChat.participants.length > 1) {
+  // if more than 1 participants block to public not logged
+  // but allow if ctx.state.user because it needs to update delivered
+  if (foundChat.participants.length > 1 || ctx.state.user) {
     ctx.assert(ctx.state.user, 403, 'No user set');
     const { data } = ctx.state.user;
     const authedUser = await User.findOne({ shortId: data });
     const savedMessages = foundChat.messages.map((m) => {
-      if (authedUser.userName !== m.author.userName) {
-        m.delivered = true;
+      let delivered = false;
+      m.deliveredTo.forEach((user) => {
+        console.log('delivered user => ', user);
+        if (user.userName === authedUser.userName) {
+          delivered = true;
+        }
+      });
+      if (!delivered) {
+        m.deliveredTo.push(authedUser);
         m.save();
       }
     });
@@ -268,18 +294,21 @@ router.get('/me', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
   const userFound = await User.findOne({ shortId: data }).populate('chats');
-
-  let allMessagesDelivered = 0;
+  let newDelivered = 0;
   const formattedChats = userFound.chats.map((c) => {
     const messagesDelivered = c.messages.map((message) => {
-      if (!message.delivered) {
-        allMessagesDelivered++;
-      }
+      let delivered = false;
+      message.deliveredTo.forEach((user) => {
+        if (user.userName === authedUser.userName) {
+          delivered = true;
+        }
+      });
+      if (!delivered) newDelivered++;
     });
   });
 
   const user = userFound.public();
-  user.allMessagesDelivered = allMessagesDelivered;
+  user.allMessagesDelivered = newDelivered;
   ctx.body = user;
 });
 

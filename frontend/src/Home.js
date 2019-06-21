@@ -112,7 +112,7 @@ const Home = (props) => {
                             <span
                               className="is-pulled-right"
                               hasTextAlign="right">
-                              {talk.participants[0].userName}
+                              @{talk.participants[0].userName}
                             </span>
                           </Content>
                         </CardContent>
