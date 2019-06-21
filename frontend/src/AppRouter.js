@@ -10,8 +10,11 @@ import NewTalk from './NewTalk';
 import AddFunds from './AddFunds';
 import NewPass from './NewPass';
 import NotFound from './NotFound';
+import ReactGA from 'react-ga';
 
 const AppRouter = () => {
+  ReactGA.initialize('UA-142523459-1');
+  ReactGA.pageview(window.location.pathname + window.location.search);
   return (
     <Router>
       <Switch>

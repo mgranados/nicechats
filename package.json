@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "lodash.find": "^4.6.0"
+    "lodash.find": "^4.6.0",
+    "react-ga": "^2.5.7"
   }
 }

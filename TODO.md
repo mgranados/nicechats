@@ -23,6 +23,7 @@ Next feature:
 - [x] add number of notifs to Navbar
 - [x] add new messages count to My Talks
 - [x] add delivered_to array instead of boolean
-- [ ] add payments to add balance (transactions)
+- [ ] add payments to add balance (VIEW)
+- [ ] success payment webhook (VIEW)
 - [x] allow signup!
-- [ ] bug send first message
+- [x] bug send first message
