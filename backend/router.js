@@ -61,7 +61,7 @@ router.post('/chats/:uuid', async (ctx) => {
   ctx.assert(foundChat, 404, 'No chat found');
   for (participant in foundChat.participants) {
     ctx.assert(
-      authedUser.userName === participant.userName,
+      authedUser.userName !== participant.userName,
       409,
       'Already part of chat',
     );
@@ -230,7 +230,6 @@ router.get('/chats/:uuid/messages', async (ctx) => {
     const savedMessages = foundChat.messages.map((m) => {
       let delivered = false;
       m.deliveredTo.forEach((user) => {
-        console.log('delivered user => ', user);
         if (user.userName === authedUser.userName) {
           delivered = true;
         }
