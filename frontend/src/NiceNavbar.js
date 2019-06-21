@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import './Home.scss';
 import {
   Navbar,
@@ -23,11 +23,18 @@ const logout = () => {
 };
 
 const NiceNavbar = (props) => {
-  let sessionButton;
+  let sessionButtons;
   if (props.isAuthed) {
-    sessionButton = <Button onClick={() => logout('token')}>Logout</Button>;
+    sessionButtons = <Button onClick={() => logout('token')}>Logout</Button>;
   } else {
-    sessionButton = <Link to="/login">Login</Link>;
+    sessionButtons = (
+      <Fragment>
+        <Link className="is-margin-right" to="/login">
+          Login
+        </Link>
+        <Link to="/signup">Sign up</Link>
+      </Fragment>
+    );
   }
   const [navActive, setNavActive] = useState(false);
 
@@ -62,7 +69,7 @@ const NiceNavbar = (props) => {
           </NavbarItem>
         </NavbarStart>
         <NavbarEnd>
-          <NavbarItem>{sessionButton}</NavbarItem>
+          <NavbarItem>{sessionButtons}</NavbarItem>
           <NavbarItem>
             <Field isGrouped>
               <Control>

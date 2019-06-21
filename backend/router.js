@@ -267,7 +267,6 @@ router.post('/users', async (ctx) => {
     email,
     password,
     userName,
-    newPasswordRequired: true,
   });
 
   ctx.body = createdUser.public();

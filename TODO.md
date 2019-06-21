@@ -25,3 +25,4 @@ Next feature:
 - [x] add delivered_to array instead of boolean
 - [ ] add payments to add balance (transactions)
 - [ ] allow signup!
+- [ ] bug send first message

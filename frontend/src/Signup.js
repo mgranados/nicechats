@@ -5,6 +5,7 @@ import {
   FieldBody,
   Label,
   Input,
+  Help,
   Columns,
   Column,
   Hero,
@@ -22,7 +23,14 @@ import {signup} from './api';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordAgain, setPasswordAgain] = useState('');
   const [userName, setUserName] = useState('');
+  const [signupError, setSignupError] = useState('');
+
+  let errorLabel;
+  if (signupError) {
+    errorLabel = <Help isColor="danger">{signupError} </Help>;
+  }
 
   return (
     <React.Fragment>
@@ -89,6 +97,27 @@ const Signup = () => {
                 </Field>
 
                 <Field isHorizontal>
+                  <FieldLabel isNormal>
+                    <Label style={{color: 'white'}}>Password again</Label>
+                  </FieldLabel>
+                  <FieldBody>
+                    <Field>
+                      <Control isExpanded>
+                        {errorLabel}
+                        <Input
+                          value={passwordAgain}
+                          type="password"
+                          onChange={(event) =>
+                            setPasswordAgain(event.target.value)
+                          }
+                          placeholder="HopeIts4G00dOn3Again"
+                        />
+                      </Control>
+                    </Field>
+                  </FieldBody>
+                </Field>
+
+                <Field isHorizontal>
                   <FieldLabel /> {/* empty for spacing */}
                   <FieldBody>
                     <Field>
@@ -96,16 +125,20 @@ const Signup = () => {
                         <Button
                           isColor="primary"
                           onClick={async () => {
-                            const response = await signup(
-                              email,
-                              password,
-                              userName,
-                            );
-                            if (response.status === 200) {
-                              window.location.href = '/login';
+                            if (password !== passwordAgain) {
+                              setSignupError("Passwords don't match");
+                            } else {
+                              const response = await signup(
+                                email,
+                                password,
+                                userName,
+                              );
+                              if (response.status === 200) {
+                                window.location.href = '/login';
+                              }
                             }
                           }}>
-                          Submit
+                          Register
                         </Button>
                       </Control>
                     </Field>
