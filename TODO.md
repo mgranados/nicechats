@@ -23,7 +23,23 @@ Next feature:
 - [x] add number of notifs to Navbar
 - [x] add new messages count to My Talks
 - [x] add delivered_to array instead of boolean
-- [ ] add payments to add balance (VIEW)
-- [ ] success payment webhook (VIEW)
 - [x] allow signup!
 - [x] bug send first message
+		
+## July
+- [ ] allow anyone to audit (publicly readable)
+- [ ] Pay 5USD for creating a conversation
+
+- [ ] allow anyone to join free
+- [ ] allow to join with password
+- [ ] allow to join with link
+- [ ] revamp UI
+- [ ] add websockets
+
+- [ ] confirm or ditch websockets
+- [ ] iOS app
+- [ ] android app
+
+## MAYBE
+- [ ] allow multiple persons to join and chat
+
