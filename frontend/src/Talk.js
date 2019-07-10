@@ -187,7 +187,7 @@ const Talk = (props) => {
         </Field>
       );
     }
-  } else {
+  } else if (fullTalk.participants < 2) {
     talkActions = (
       <Field isHorizontal>
         <FieldBody>

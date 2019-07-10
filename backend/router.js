@@ -34,10 +34,11 @@ router.post('/chats', async (ctx) => {
   ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
   authedUser.balance = authedUser.balance - 1;
 
-  const { subject } = ctx.request.body;
+  const { subject, publiclyVisible } = ctx.request.body;
   ctx.assert(subject, 422, 'No subject provided');
   const createdChat = await Chat.create({
     subject,
+    publiclyVisible,
   });
   createdChat.participants.push(authedUser);
   authedUser.chats.push(createdChat);
@@ -108,7 +109,7 @@ router.post('/chats/:uuid/messages', async (ctx) => {
 
 router.get('/chats/recent', async (ctx) => {
   const foundChats = await Chat.find({
-    participants: { $size: 1 },
+    $or: [{ participants: { $size: 1 } }, { publiclyVisible: true }],
   })
     .sort('-createdAt')
     .populate('participants')
@@ -206,8 +207,27 @@ router.get('/chats/me', async (ctx) => {
 
 router.get('/chats/:uuid/messages', async (ctx) => {
   const { uuid } = ctx.params;
+  //add conditions: Chat is public
+  //user is part of participants
+  let authedUser;
+  if (ctx.state.user) {
+    ctx.assert(ctx.state.user, 403, 'No user set');
+    const { data } = ctx.state.user;
+    authedUser = await User.findOne({ shortId: data });
+  }
+  let userIfAny;
+  if (authedUser) {
+    userIfAny = authedUser.userName;
+  } else {
+    userIfAny = '';
+  }
   const foundChat = await Chat.findOne({
-    shortId: uuid,
+    $and: [
+      { shortId: uuid },
+      {
+        $or: [{ publicVisible: true }, { 'participants.userName': userIfAny }],
+      },
+    ],
   })
     .populate('participants')
     .populate({
@@ -221,12 +241,9 @@ router.get('/chats/:uuid/messages', async (ctx) => {
       ],
     });
   ctx.assert(foundChat, 404, 'No chat found');
-  // if more than 1 participants block to public not logged
   // but allow if ctx.state.user because it needs to update delivered
-  if (foundChat.participants.length > 1 || ctx.state.user) {
-    ctx.assert(ctx.state.user, 403, 'No user set');
-    const { data } = ctx.state.user;
-    const authedUser = await User.findOne({ shortId: data });
+  // this just updates the delivered to
+  if (ctx.state.user) {
     const savedMessages = foundChat.messages.map((m) => {
       let delivered = false;
       m.deliveredTo.forEach((user) => {

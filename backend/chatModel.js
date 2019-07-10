@@ -11,7 +11,7 @@ const chatSchema = new Schema(
     subject: { type: String },
     participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
-    public: { type: Boolean, default: false },
+    publiclyVisible: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

@@ -93,6 +93,18 @@
   font-size: 1em;
 }
 
+.public-warning{
+    margin-left: 10px;
+    padding: 5px;
+    margin-top: -2px;
+    color: white!important;
+    background-color: red;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

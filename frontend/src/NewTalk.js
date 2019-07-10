@@ -3,6 +3,7 @@ import './Home.scss';
 import {
   FieldLabel,
   FieldBody,
+  Select,
   Label,
   TextArea,
   Columns,
@@ -39,11 +40,23 @@ const NewTalk = () => {
   const [subject, setSubject] = useState('');
   const [errorCreating, setErrorCreating] = useState('');
 
+  const [publicVisible, setPublicVisible] = useState('');
   let errorLabel;
   if (errorCreating) {
     errorLabel = <Help isColor="warning">{errorCreating} </Help>;
   } else {
     errorLabel = <span />;
+  }
+  let publicWarning;
+  if (publicVisible === 'public') {
+    publicWarning = (
+      <Help isColor="danger" className={'public-warning'}>
+        Talk will be publicly auditable by{' '}
+        <span className={'underlined'}>anyone!</span>
+      </Help>
+    );
+  } else {
+    publicWarning = <span />;
   }
   return (
     <React.Fragment>
@@ -75,41 +88,54 @@ const NewTalk = () => {
                       </Field>
                     </FieldBody>
                   </Field>
-
+                  <Field isHorizontal>
+                    <FieldLabel isNormal>
+                      <Label style={{color: 'white'}}>Visibility:</Label>
+                    </FieldLabel>
+                    <FieldBody>
+                      <Control>
+                        <Select
+                          onChange={(e) => {
+                            setPublicVisible(e.target.value);
+                          }}>
+                          <option value="private">Private</option>
+                          <option value="public">Public</option>
+                        </Select>
+                      </Control>
+                      {publicWarning}
+                    </FieldBody>
+                  </Field>
                   <Field isHorizontal>
                     <FieldLabel />
                     <FieldBody>
-                      <Field>
-                        <Control>
-                          <Button
-                            isColor="primary"
-                            onClick={async () => {
-                              const response = await createTalk(
-                                subject,
-                                userSession.token,
-                              );
-                              if (response.status === 200) {
-                                const responseReady = await response.json();
-                                window.location.href = `/t/${
-                                  responseReady.shortId
-                                }`;
-                              } else if (response.status === 402) {
-                                setErrorCreating(
-                                  'You do not have enough funds',
-                                );
-                              } else if (response.status === 422) {
-                                setErrorCreating('No subject provided');
-                              } else if (response.status === 403) {
-                                setErrorCreating('Please login first');
-                              } else {
-                                setErrorCreating('Error creating your Talk');
-                              }
-                            }}>
-                            Create
-                          </Button>
-                          {errorLabel}
-                        </Control>
-                      </Field>
+                      <Control>
+                        <Button
+                          isColor="primary"
+                          onClick={async () => {
+                            const data = {subject, publicVisible};
+                            const response = await createTalk(
+                              data,
+                              userSession.token,
+                            );
+                            if (response.status === 200) {
+                              const responseReady = await response.json();
+                              window.location.href = `/t/${
+                                responseReady.shortId
+                              }`;
+                            } else if (response.status === 402) {
+                              setErrorCreating('You do not have enough funds');
+                            } else if (response.status === 422) {
+                              setErrorCreating('No subject provided');
+                            } else if (response.status === 403) {
+                              setErrorCreating('Please login first');
+                            } else {
+                              setErrorCreating('Error creating your Talk');
+                            }
+                          }}>
+                          Create Talk
+                        </Button>
+                        {errorLabel}
+                      </Control>
                     </FieldBody>
                   </Field>
                 </form>
