@@ -35,6 +35,8 @@ router.post('/chats', async (ctx) => {
   authedUser.balance = authedUser.balance - 1;
 
   const { subject, publiclyVisible } = ctx.request.body;
+
+  console.log('body => ', ctx.request.body);
   ctx.assert(subject, 422, 'No subject provided');
   const createdChat = await Chat.create({
     subject,

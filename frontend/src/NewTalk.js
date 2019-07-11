@@ -40,7 +40,7 @@ const NewTalk = () => {
   const [subject, setSubject] = useState('');
   const [errorCreating, setErrorCreating] = useState('');
 
-  const [publicVisible, setPublicVisible] = useState('');
+  const [publicVisible, setPublicVisible] = useState('private');
   let errorLabel;
   if (errorCreating) {
     errorLabel = <Help isColor="warning">{errorCreating} </Help>;
@@ -112,7 +112,10 @@ const NewTalk = () => {
                         <Button
                           isColor="primary"
                           onClick={async () => {
-                            const data = {subject, publicVisible};
+                            const data = {
+                              subject,
+                              publiclyVisible: publicVisible === 'public',
+                            };
                             const response = await createTalk(
                               data,
                               userSession.token,

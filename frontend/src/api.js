@@ -46,15 +46,14 @@ export const getMyTalks = async (userToken) => {
 };
 
 export const createTalk = async (data, userToken) => {
-  const {subject, publicVisible} = data;
-  const publicVisibility = publicVisible === 'public';
+  const {subject, publiclyVisible} = data;
   const response = await fetch(`${apiUrl}/v1/chats`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + userToken,
     },
-    body: JSON.stringify({subject, public: publicVisibility}),
+    body: JSON.stringify({subject, publiclyVisible}),
   });
   return response;
 };
