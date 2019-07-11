@@ -209,43 +209,75 @@ router.get('/chats/me', async (ctx) => {
 
 router.get('/chats/:uuid/messages', async (ctx) => {
   const { uuid } = ctx.params;
-  //add conditions: Chat is public
-  //user is part of participants
+  const chatToCheck = await Chat.findOne({ shortId: uuid });
+  let foundChat;
   let authedUser;
-  if (ctx.state.user) {
+  if (chatToCheck.publiclyVisible) {
+    //chat is public
+    foundChat = await Chat.findOne({ shortId: uuid })
+      .populate('participants')
+      .populate({
+        path: 'messages',
+        populate: [
+          { path: 'author' },
+          {
+            path: 'deliveredTo',
+            model: 'User',
+          },
+        ],
+      });
+    //if user is logged
+    if (ctx.state.user) {
+      const { data } = ctx.state.user;
+      authedUser = await User.findOne({ shortId: data }).populate('chats');
+      //check if is participant
+      const isParticipant = foundChat.participants.filter(function(user) {
+        if (user.userName === authedUser.userName) {
+          return user;
+        }
+      });
+      if (isParticipant) {
+        //if part of chat push to delivered
+        const savedMessages = foundChat.messages.map((m) => {
+          let delivered = false;
+          m.deliveredTo.forEach((user) => {
+            if (user.userName === authedUser.userName) {
+              delivered = true;
+            }
+          });
+          if (!delivered) {
+            m.deliveredTo.push(authedUser);
+            m.save();
+          }
+        });
+      }
+    }
+  } else {
+    // if chat is private
     ctx.assert(ctx.state.user, 403, 'No user set');
     const { data } = ctx.state.user;
-    authedUser = await User.findOne({ shortId: data });
-  }
-  let userIfAny;
-  if (authedUser) {
-    userIfAny = authedUser.userName;
-  } else {
-    userIfAny = '';
-  }
-  const foundChat = await Chat.findOne({
-    $and: [
-      { shortId: uuid },
-      {
-        $or: [{ publicVisible: true }, { 'participants.userName': userIfAny }],
-      },
-    ],
-  })
-    .populate('participants')
-    .populate({
-      path: 'messages',
-      populate: [
-        { path: 'author' },
-        {
-          path: 'deliveredTo',
-          model: 'User',
-        },
-      ],
+    authedUser = await User.findOne({ shortId: data }).populate('chats');
+    foundChat = await Chat.findOne({ shortId: uuid })
+      .populate('participants')
+      .populate({
+        path: 'messages',
+        populate: [
+          { path: 'author' },
+          {
+            path: 'deliveredTo',
+            model: 'User',
+          },
+        ],
+      });
+    // user needs to be part of it
+    const isParticipant = foundChat.participants.filter(function(user) {
+      if (user.userName === authedUser.userName) {
+        return user;
+      }
     });
-  ctx.assert(foundChat, 404, 'No chat found');
-  // but allow if ctx.state.user because it needs to update delivered
-  // this just updates the delivered to
-  if (ctx.state.user) {
+    ctx.assert(isParticipant, 401, 'Not part of chat');
+
+    //if part of chat push to delivered
     const savedMessages = foundChat.messages.map((m) => {
       let delivered = false;
       m.deliveredTo.forEach((user) => {
@@ -259,6 +291,7 @@ router.get('/chats/:uuid/messages', async (ctx) => {
       }
     });
   }
+  ctx.assert(foundChat, 404, 'No chat found');
 
   const formattedParticipants = foundChat.participants.map((p) =>
     p.participantFormat(),
