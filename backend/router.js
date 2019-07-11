@@ -212,7 +212,7 @@ router.get('/chats/:uuid/messages', async (ctx) => {
   const chatToCheck = await Chat.findOne({ shortId: uuid });
   let foundChat;
   let authedUser;
-  if (chatToCheck.publiclyVisible) {
+  if (chatToCheck.publiclyVisible || chatToCheck.participants.length < 2) {
     //chat is public
     foundChat = await Chat.findOne({ shortId: uuid })
       .populate('participants')

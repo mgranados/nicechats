@@ -47,6 +47,7 @@ const Talk = (props) => {
 
   const [fullTalk, setFullTalk] = useState({});
   const [reloadPage, setReloadPage] = useState(false);
+  const [notAllowed, setNotAllowed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     setIsLoading(true);
@@ -58,6 +59,9 @@ const Talk = (props) => {
       if (response.status === 200) {
         const responseReady = await response.json();
         setFullTalk(responseReady);
+        setNotAllowed(false);
+      } else if (response.status === 403) {
+        setNotAllowed(true);
       } else {
         setFullTalk([]);
       }
@@ -102,6 +106,18 @@ const Talk = (props) => {
     errorLabel = <Help isColor="danger">{errorJoining} </Help>;
   } else {
     errorLabel = <span />;
+  }
+
+  let notAllowedSection;
+
+  if (notAllowed) {
+    notAllowedSection = (
+      <p>
+        You're not allowed here. <Link to="/">Go Home</Link>
+      </p>
+    );
+  } else {
+    notAllowedSection = <span />;
   }
 
   useEffect(() => {
@@ -252,6 +268,7 @@ const Talk = (props) => {
               </Card>
               {talkActions}
               {errorLabel}
+              {notAllowedSection}
             </Column>
           </Columns>
         </Container>
