@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import './Home.scss';
 import {
   FieldBody,
@@ -203,20 +203,25 @@ const Talk = (props) => {
         </Field>
       );
     }
-  } else if (fullTalk.participants < 2) {
+  } else if (fullTalk.participants && fullTalk.participants.length < 2) {
     talkActions = (
-      <Field isHorizontal>
-        <FieldBody>
-          <Field>
-            <Control>
-              <Link to="/login">
-                <Button isPulled="right" isColor="primary">
-                  Log In to Join Chat
-                </Button>
-              </Link>
-            </Control>
-          </Field>
-        </FieldBody>
+      <Field isGrouped={'centered'} className="ableToJoin">
+        <Control>
+          <Link to="/login">
+            <Button isPulled="right" isColor="primary">
+              Log In
+            </Button>
+          </Link>
+        </Control>
+        <span> or </span>
+        <Control>
+          <Link to="/signup">
+            <Button isPulled="right" isColor="primary">
+              Sign Up
+            </Button>
+          </Link>
+        </Control>
+        <span> to Chat</span>
       </Field>
     );
   }
