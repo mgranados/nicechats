@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 import {
   FieldLabel,
@@ -18,13 +18,31 @@ import {
   Container,
 } from 'bloomer';
 import NiceNavbar from './NiceNavbar';
-import {signup} from './api';
+import {getCookie} from './utils';
+import {setTopics} from './api';
 
-const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordAgain, setPasswordAgain] = useState('');
-  const [userName, setUserName] = useState('');
+const SetTopics = () => {
+  const [userSession, setUserSession] = useState({
+    isLogged: false,
+    token: null,
+    userName: '',
+  });
+
+  useEffect(() => {
+    const userToken = getCookie('token');
+    const userName = getCookie('userName');
+    if (userToken && userName) {
+      setUserSession({
+        isLogged: true,
+        token: userToken,
+        userName: userName,
+      });
+    }
+  }, []);
+
+  const [firstTopic, setFirstTopic] = useState('');
+  const [secondTopic, setSecondTopic] = useState('');
+  const [thirdTopic, setThirdTopic] = useState('');
   const [signupError, setSignupError] = useState('');
 
   let errorLabel;
@@ -42,75 +60,65 @@ const Signup = () => {
           <Container hasTextAlign="centered">
             <Columns>
               <Column isSize={6} isOffset={3}>
-                <Title>Register</Title>
+                <Title>Share your skills!</Title>
                 <Field isHorizontal>
                   <FieldLabel isNormal>
-                    <Label style={{color: 'white'}}>Email</Label>
+                    <Label style={{color: 'white'}}>
+                      One skill you're good at
+                    </Label>
                   </FieldLabel>
                   <FieldBody>
                     <Field>
                       <Control isExpanded>
                         <Input
-                          value={email}
-                          onChange={(event) => setEmail(event.target.value)}
-                          type="email"
-                          placeholder="something@gmail.com most likely"
-                        />
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
-                <Field isHorizontal>
-                  <FieldLabel isNormal>
-                    <Label style={{color: 'white'}}>Username</Label>
-                  </FieldLabel>
-                  <FieldBody>
-                    <Field>
-                      <Control isExpanded>
-                        <Input
-                          value={userName}
-                          onChange={(event) => setUserName(event.target.value)}
-                          type="text"
-                          placeholder="user90210"
-                        />
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
-
-                <Field isHorizontal>
-                  <FieldLabel isNormal>
-                    <Label style={{color: 'white'}}>Password</Label>
-                  </FieldLabel>
-                  <FieldBody>
-                    <Field>
-                      <Control isExpanded>
-                        <Input
-                          value={password}
-                          type="password"
-                          onChange={(event) => setPassword(event.target.value)}
-                          placeholder="HopeIts4G00dOn3"
-                        />
-                      </Control>
-                    </Field>
-                  </FieldBody>
-                </Field>
-
-                <Field isHorizontal>
-                  <FieldLabel isNormal>
-                    <Label style={{color: 'white'}}>Password again</Label>
-                  </FieldLabel>
-                  <FieldBody>
-                    <Field>
-                      <Control isExpanded>
-                        {errorLabel}
-                        <Input
-                          value={passwordAgain}
-                          type="password"
+                          value={firstTopic}
                           onChange={(event) =>
-                            setPasswordAgain(event.target.value)
+                            setFirstTopic(event.target.value)
                           }
-                          placeholder="HopeIts4G00dOn3Again"
+                          type="text"
+                          placeholder="Making bacon pancakes"
+                        />
+                      </Control>
+                    </Field>
+                  </FieldBody>
+                </Field>
+                <Field isHorizontal>
+                  <FieldLabel isNormal>
+                    <Label style={{color: 'white'}}>
+                      Another skill you're good at
+                    </Label>
+                  </FieldLabel>
+                  <FieldBody>
+                    <Field>
+                      <Control isExpanded>
+                        <Input
+                          value={secondTopic}
+                          onChange={(event) =>
+                            setSecondTopic(event.target.value)
+                          }
+                          type="text"
+                          placeholder="Put some bacon and then put in a pancake"
+                        />
+                      </Control>
+                    </Field>
+                  </FieldBody>
+                </Field>
+                <Field isHorizontal>
+                  <FieldLabel isNormal>
+                    <Label style={{color: 'white'}}>
+                      One last skill you're good at
+                    </Label>
+                  </FieldLabel>
+                  <FieldBody>
+                    <Field>
+                      <Control isExpanded>
+                        <Input
+                          value={thirdTopic}
+                          onChange={(event) =>
+                            setThirdTopic(event.target.value)
+                          }
+                          type="text"
+                          placeholder="Being through the desert in a horse with no name "
                         />
                       </Control>
                     </Field>
@@ -124,20 +132,21 @@ const Signup = () => {
                         <Button
                           isColor="primary"
                           onClick={async () => {
-                            if (password !== passwordAgain) {
-                              setSignupError("Passwords don't match");
+                            if (!firstTopic || !secondTopic || !thirdTopic) {
+                              setSignupError('Please fill your skills!');
                             } else {
-                              const response = await signup(
-                                email,
-                                password,
-                                userName,
+                              const response = await setTopics(
+                                firstTopic,
+                                secondTopic,
+                                thirdTopic,
+                                userSession.token,
                               );
                               if (response.status === 200) {
-                                window.location.href = '/login';
+                                window.location.href = '/';
                               }
                             }
                           }}>
-                          Register
+                          Share Skills
                         </Button>
                       </Control>
                     </Field>
@@ -152,4 +161,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SetTopics;

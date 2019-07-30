@@ -18,6 +18,7 @@ const userSchema = new Schema(
     country: { type: String },
     description: { type: String },
     newPasswordRequired: { type: Boolean, default: false },
+    enterTopicsRequired: { type: Boolean, default: true },
     balance: { type: Number, default: 2 },
     chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],

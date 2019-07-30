@@ -27,6 +27,49 @@ router.get('/chats', async (ctx) => {
   ctx.body = chatList;
 });
 
+router.post('/chats/:topicId', async (ctx) => {
+  // If no user token not possible to create a chat
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
+  const { topicId } = ctx.params;
+  const topic = await Topic.findOne({ shortId: topicId });
+  topic.popularity = topic.popularity + 1;
+  topic.participants.push(authedUser);
+  await topic.save();
+
+  const createdChat = await Chat.create({
+    subject: topic.subject,
+    publiclyVisible: true,
+  });
+  createdChat.participants.push(authedUser);
+  authedUser.chats.push(createdChat);
+  await authedUser.save();
+  await createdChat.save();
+
+  const { message } = ctx.request.body;
+  ctx.assert(message, 422, 'No message provided');
+  const newMessage = await Message.create({
+    actualMessage: message,
+  });
+
+  newMessage.author = authedUser;
+  newMessage.deliveredTo.push(authedUser);
+  newMessage.chat = createdChat;
+  await newMessage.save();
+  await Chat.update(
+    { shortId: createdChat.shortId },
+    { $push: { messages: newMessage } },
+  );
+  await User.update(
+    { shortId: authedUser.shortId },
+    { $push: { messages: newMessage } },
+  );
+
+  ctx.body = createdChat.listFormat();
+});
+
 router.post('/chats', async (ctx) => {
   // If no user token not possible to create a chat
   ctx.assert(ctx.state.user, 403, 'No user set');
@@ -48,36 +91,6 @@ router.post('/chats', async (ctx) => {
   await authedUser.save();
   await createdChat.save();
   ctx.body = createdChat;
-});
-
-// creating a message
-router.post('/chats/:uuid', async (ctx) => {
-  // If no user token not possible to create a chat
-  ctx.assert(ctx.state.user, 403, 'No user set');
-  const { data } = ctx.state.user;
-  const authedUser = await User.findOne({ shortId: data });
-
-  const { uuid } = ctx.params;
-  const foundChat = await Chat.findOne({
-    shortId: uuid,
-  });
-
-  ctx.assert(foundChat, 404, 'No chat found');
-  for (participant in foundChat.participants) {
-    ctx.assert(
-      authedUser.userName !== participant.userName,
-      409,
-      'Already part of chat',
-    );
-  }
-  ctx.assert(foundChat.participants.length <= 1, 422, 'Chat full');
-  ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
-  authedUser.balance = authedUser.balance - 1;
-  foundChat.participants.push(authedUser);
-  await foundChat.save();
-  authedUser.chats.push(foundChat);
-  await authedUser.save();
-  ctx.body = foundChat;
 });
 
 // creating a message via POST
@@ -111,19 +124,23 @@ router.post('/chats/:uuid/messages', async (ctx) => {
 });
 
 router.get('/chats/recent', async (ctx) => {
-  const { data } = ctx.state.user;
-  const authedUser = await User.findOne({ shortId: data });
+  let authedUser = {};
+  if (ctx.state.user) {
+    const { data } = ctx.state.user;
+    authedUser = await User.findOne({ shortId: data });
+  }
 
   let foundChats;
   if (authedUser) {
     foundChats = await Topic.find({
       author: { $ne: authedUser._id },
-    });
+    })
+      .sort('-createdAt')
+      .populate('author');
   } else {
     foundChats = await Topic.find({})
       .sort('-createdAt')
-      .populate('author')
-      .limit(5);
+      .populate('author');
   }
   ctx.assert(foundChats, 404, 'No chats found');
 
@@ -147,19 +164,23 @@ router.get('/chats/others', async (ctx) => {
 });
 
 router.get('/chats/available', async (ctx) => {
-  const { data } = ctx.state.user;
-  const authedUser = await User.findOne({ shortId: data });
+  let authedUser = {};
+  if (ctx.state.user) {
+    const { data } = ctx.state.user;
+    authedUser = await User.findOne({ shortId: data });
+  }
 
   let foundChats;
   if (authedUser) {
     foundChats = await Topic.find({
       author: { $ne: authedUser._id },
-    });
+    })
+      .sort('-createdAt')
+      .populate('author');
   } else {
     foundChats = await Topic.find({})
       .sort('-createdAt')
-      .populate('author')
-      .limit(5);
+      .populate('author');
   }
 
   ctx.assert(foundChats, 404, 'No chats found');
@@ -309,26 +330,14 @@ router.get('/chats/:uuid/messages', async (ctx) => {
   ctx.body = formattedChat;
 });
 
-router.post('/users', async (ctx) => {
-  const {
-    email,
-    password,
-    userName,
-    topic1,
-    topic2,
-    topic3,
-  } = ctx.request.body;
-  const previousUser = await User.findOne({
-    $or: [{ email }, { userName }],
-  });
+router.post('/skills', async (ctx) => {
+  const { topic1, topic2, topic3 } = ctx.request.body;
 
-  ctx.assert(!previousUser, 403, 'User exists');
-
-  const createdUser = await User.create({
-    email,
-    password,
-    userName,
-  });
+  ctx.assert(ctx.state.user, 403, 'No user set');
+  const { data } = ctx.state.user;
+  authedUser = await User.findOne({ shortId: data }).populate('chats');
+  authedUser.enterTopicsRequired = false;
+  authedUser.save();
 
   // create three skill chats (that never end)
   const firstTopic = await Topic.create({
@@ -341,13 +350,30 @@ router.post('/users', async (ctx) => {
     subject: topic3,
   });
 
-  firstTopic.author = createdUser;
-  secondTopic.author = createdUser;
-  thirdTopic.author = createdUser;
+  firstTopic.author = authedUser;
+  secondTopic.author = authedUser;
+  thirdTopic.author = authedUser;
 
   await firstTopic.save();
   await secondTopic.save();
   await thirdTopic.save();
+
+  ctx.body = authedUser.public();
+});
+
+router.post('/users', async (ctx) => {
+  const { email, password, userName } = ctx.request.body;
+  const previousUser = await User.findOne({
+    $or: [{ email }, { userName }],
+  });
+
+  ctx.assert(!previousUser, 403, 'User exists');
+
+  const createdUser = await User.create({
+    email,
+    password,
+    userName,
+  });
 
   ctx.body = createdUser.public();
 });

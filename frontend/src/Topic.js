@@ -23,7 +23,7 @@ import {faSync} from '@fortawesome/free-solid-svg-icons';
 import NiceNavbar from './NiceNavbar';
 import {getCookie} from './utils';
 import {Link} from 'react-router-dom';
-import {getTopicDetails, postNewMessage, postJoinTalk} from './api';
+import {getTopicDetails, postNewTalk} from './api';
 import moment from 'moment';
 
 const Topic = (props) => {
@@ -79,13 +79,17 @@ const Topic = (props) => {
   const [post, setPost] = useState(false);
   useEffect(() => {
     async function postMessage() {
-      const response = await postNewMessage(
+      const response = await postNewTalk(
         newMessage,
         props.match.params.id,
         userSession.token,
       );
       if (response.status === 200) {
-        setReloadPage(true);
+        const responseReady = await response.json();
+        //redirect to created Talk
+        if (responseReady.shortId) {
+          window.location.href = '/c/' + responseReady.shortId;
+        }
       } else if (response.status === 422) {
         setErrorJoining('Please write something');
       }
@@ -97,8 +101,6 @@ const Topic = (props) => {
     setPost(false);
   }, [post, props.match.params.id, userSession.token]);
 
-  const [partOfChat, setPartOfChat] = useState(false);
-  const [joinChat, setJoinChat] = useState(false);
   const [errorJoining, setErrorJoining] = useState('');
 
   let errorLabel;
@@ -107,48 +109,6 @@ const Topic = (props) => {
   } else {
     errorLabel = <span />;
   }
-
-  let notAllowedSection;
-
-  if (notAllowed) {
-    notAllowedSection = (
-      <p>
-        You're not allowed here. <Link to="/">Go Home</Link>
-      </p>
-    );
-  } else {
-    notAllowedSection = <span />;
-  }
-
-  useEffect(() => {
-    async function joinChatAsync() {
-      const response = await postJoinTalk(
-        props.match.params.id,
-        userSession.token,
-      );
-      if (response.status === 200) {
-        setReloadPage(true);
-        setPartOfChat(true);
-      } else if (response.status === 402) {
-        setErrorJoining('You do not have enough funds');
-      } else {
-        setErrorJoining('Error joining');
-      }
-    }
-    // verify if not part of chat already
-    if (fullTalk && fullTalk.participants) {
-      fullTalk.participants.map((participant) => {
-        if (participant.userName === userSession.userName) {
-          setPartOfChat(true);
-        }
-      });
-    }
-
-    if (joinChat) {
-      joinChatAsync();
-    }
-    setJoinChat(false);
-  }, [joinChat, userSession, fullTalk, props.match.params.id]);
 
   let talkActions;
   if (userSession.isLogged) {

@@ -54,21 +54,6 @@ const Home = (props) => {
     getHomeTalks();
   }, []);
 
-  let createTalkMaybe;
-  if (!recentTalks || !recentTalks.length) {
-    createTalkMaybe = (
-      <Fragment>
-        <h2>None found! Please start one yourself</h2>
-        <br />
-        <Link to="/new">
-          <Button isPulled="left" isColor="primary">
-            Create Talk
-          </Button>
-        </Link>
-      </Fragment>
-    );
-  }
-
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -89,7 +74,6 @@ const Home = (props) => {
       <Section>
         <Container>
           <Title>You can talk about: </Title>
-          {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
           ) : (

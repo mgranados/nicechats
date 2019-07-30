@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Signup from './Signup';
+import SetTopics from './SetTopics';
 import Talks from './Talks';
 import MyTalks from './MyTalks';
 import Talk from './Talk';
@@ -22,6 +23,7 @@ const AppRouter = () => {
         <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route path="/skills" component={SetTopics} />
         <Route path="/talks" component={Talks} />
         <Route path="/new" component={NewTalk} />
         <Route path="/add-funds" component={AddFunds} />

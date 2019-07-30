@@ -10,6 +10,7 @@ const topicSchema = new Schema(
     shortId: { type: String, default: generate },
     subject: { type: String },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
+    participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     publiclyVisible: { type: Boolean, default: true },
     popularity: { type: Number, default: 0 },
   },
