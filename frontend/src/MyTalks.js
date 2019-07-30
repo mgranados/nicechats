@@ -91,11 +91,6 @@ const MyTalks = (props) => {
       </Hero>
       <Section>
         <Container>
-          <Link to="/new">
-            <Button isPulled="right" isColor="primary">
-              Create Talk
-            </Button>
-          </Link>
           <Title>
             Your chats{' '}
             <Button isSize="medium" isColor="primary">
@@ -110,7 +105,7 @@ const MyTalks = (props) => {
               {myTalks &&
                 myTalks.map((talk) => (
                   <li key={talk.shortId}>
-                    <Link to={`t/${talk.shortId}`}>
+                    <Link to={`c/${talk.shortId}`}>
                       <Card className="talk-listing">
                         <CardContent>
                           <Media>

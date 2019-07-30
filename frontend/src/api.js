@@ -58,6 +58,18 @@ export const createTalk = async (data, userToken) => {
   return response;
 };
 
+export const setTopics = async (topic1, topic2, topic3, userToken) => {
+  const response = await fetch(`${apiUrl}/v1/skills`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+    body: JSON.stringify({topic1, topic2, topic3}),
+  });
+  return response;
+};
+
 export const signup = async (email, password, userName) => {
   const response = await fetch(`${apiUrl}/v1/users`, {
     method: 'post',
@@ -69,6 +81,17 @@ export const signup = async (email, password, userName) => {
   return response;
 };
 
+export const getTopicDetails = async (talkId, userToken) => {
+  const response = await fetch(`${apiUrl}/v1/topics/${talkId}`, {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+  });
+  return response;
+};
+
 export const getTalkDetails = async (talkId, userToken) => {
   const response = await fetch(`${apiUrl}/v1/chats/${talkId}/messages`, {
     method: 'get',
@@ -76,6 +99,18 @@ export const getTalkDetails = async (talkId, userToken) => {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + userToken,
     },
+  });
+  return response;
+};
+
+export const postNewTalk = async (message, topicId, userToken) => {
+  const response = await fetch(`${apiUrl}/v1/chats/${topicId}/`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    },
+    body: JSON.stringify({message}),
   });
   return response;
 };

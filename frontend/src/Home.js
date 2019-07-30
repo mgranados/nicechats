@@ -54,21 +54,6 @@ const Home = (props) => {
     getHomeTalks();
   }, []);
 
-  let createTalkMaybe;
-  if (!recentTalks || !recentTalks.length) {
-    createTalkMaybe = (
-      <Fragment>
-        <h2>None found! Please start one yourself</h2>
-        <br />
-        <Link to="/new">
-          <Button isPulled="left" isColor="primary">
-            Create Talk
-          </Button>
-        </Link>
-      </Fragment>
-    );
-  }
-
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -88,8 +73,7 @@ const Home = (props) => {
       </Hero>
       <Section>
         <Container>
-          <Title>Recent Talks</Title>
-          {createTalkMaybe}
+          <Title>You can talk about: </Title>
           {isLoading ? (
             <div>Loading ...</div>
           ) : (
@@ -112,7 +96,7 @@ const Home = (props) => {
                             <span
                               className="is-pulled-right"
                               hasTextAlign="right">
-                              @{talk.participants[0].userName}
+                              <small>with</small> {talk.author.userName}
                             </span>
                           </Content>
                         </CardContent>

@@ -57,15 +57,6 @@ const Talks = (props) => {
     }
   }, [userSession]);
 
-  let createTalkMaybe;
-  if (!talks || !talks.length) {
-    createTalkMaybe = (
-      <Fragment>
-        <h2>None found, start one yourself!</h2>
-      </Fragment>
-    );
-  }
-
   return (
     <React.Fragment>
       <Hero isColor="info" isSize="medium">
@@ -75,13 +66,7 @@ const Talks = (props) => {
       </Hero>
       <Section>
         <Container>
-          <Link to="/new">
-            <Button isPulled="right" isColor="primary">
-              Create Talk
-            </Button>
-          </Link>
-          <Title>Latest chats</Title>
-          {createTalkMaybe}
+          <Title>You can talk about:</Title>
           {isLoading ? (
             <div>Loading ...</div>
           ) : (
@@ -104,7 +89,8 @@ const Talks = (props) => {
                             <span
                               className="is-pulled-right"
                               hasTextAlign="right">
-                              {talk.participants[0].userName}
+                              <small>with</small>{' '}
+                              {talk.author && talk.author.userName}
                             </span>
                           </Content>
                         </CardContent>
