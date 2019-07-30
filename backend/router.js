@@ -339,7 +339,7 @@ router.post('/skills', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
   authedUser = await User.findOne({ shortId: data }).populate('chats');
-  authedUser.enterTopicsRequired = false;
+  authedUser.enteredTopics = true;
   authedUser.save();
 
   // create three skill chats (that never end)
@@ -388,6 +388,7 @@ router.post('/login', async (ctx) => {
   ctx.body = {
     userName: userLogged.userName,
     newPasswordRequired: userLogged.newPasswordRequired,
+    enteredTopics: userLogged.enteredTopics,
     token: jwt.sign(
       {
         data: userLogged.shortId,

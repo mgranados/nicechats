@@ -59,10 +59,7 @@ const Login = () => {
                       );
                       if (responseReady.newPasswordRequired) {
                         window.location.href = '/update-password';
-                      } else if (
-                        responseReady.enterTopicsRequired == null ||
-                        responseReady.enterTopicsRequired
-                      ) {
+                      } else if (!responseReady.enteredTopics) {
                         window.location.href = '/skills';
                       } else {
                         window.location.href = '/my-talks';
