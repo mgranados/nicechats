@@ -34,7 +34,7 @@ router.post('/chats/:topicId', async (ctx) => {
   const authedUser = await User.findOne({ shortId: data });
 
   const { topicId } = ctx.params;
-  const topic = await Topic.findOne({ shortId: topicId });
+  const topic = await Topic.findOne({ shortId: topicId }).populate('author');
   topic.popularity = topic.popularity + 1;
   topic.participants.push(authedUser);
   await topic.save();
@@ -44,8 +44,14 @@ router.post('/chats/:topicId', async (ctx) => {
     publiclyVisible: true,
   });
   createdChat.participants.push(authedUser);
+  createdChat.participants.push(topic.author);
   authedUser.chats.push(createdChat);
+  const topicAuthor = await User.findOne({
+    shortId: topic.author.shortId,
+  });
+  topicAuthor.chats.push(createdChat);
   await authedUser.save();
+  await topicAuthor.save();
   await createdChat.save();
 
   const { message } = ctx.request.body;
@@ -75,9 +81,6 @@ router.post('/chats', async (ctx) => {
   ctx.assert(ctx.state.user, 403, 'No user set');
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data });
-  ctx.assert(authedUser.balance >= 1, 402, 'Insufficient balance');
-  authedUser.balance = authedUser.balance - 1;
-
   const { subject, publiclyVisible } = ctx.request.body;
 
   console.log('body => ', ctx.request.body);
