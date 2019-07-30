@@ -27,18 +27,14 @@ Next feature:
 - [x] bug send first message
 		
 ## July
-- [ ] allow anyone to audit (publicly readable)
-- [ ] Pay 5USD for creating a conversation
+- [x] allow anyone to audit (publicly readable)
+- [x] allow anyone to join free
 
-- [ ] allow anyone to join free
-- [ ] allow to join with password
-- [ ] allow to join with link
+## August
+- [ ] New feature 3 skills on signup
+- [ ] Never ending chats based on those skills
 - [ ] revamp UI
 - [ ] add websockets
-
-- [ ] confirm or ditch websockets
-- [ ] iOS app
-- [ ] android app
 
 ## MAYBE
 - [ ] allow multiple persons to join and chat

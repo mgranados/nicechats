@@ -80,7 +80,7 @@ const Talks = (props) => {
               Create Talk
             </Button>
           </Link>
-          <Title>Latest chats</Title>
+          <Title>You can talk about:</Title>
           {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
@@ -104,7 +104,8 @@ const Talks = (props) => {
                             <span
                               className="is-pulled-right"
                               hasTextAlign="right">
-                              {talk.participants[0].userName}
+                              <small>with</small>{' '}
+                              {talk.author && talk.author.userName}
                             </span>
                           </Content>
                         </CardContent>

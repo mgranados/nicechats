@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const User = require('./userModel');
 const Chat = require('./chatModel');
+const Topic = require('./topicModel');
 const Message = require('./messageModel');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
@@ -110,22 +111,23 @@ router.post('/chats/:uuid/messages', async (ctx) => {
 });
 
 router.get('/chats/recent', async (ctx) => {
-  const foundChats = await Chat.find({
-    $or: [{ participants: { $size: 1 } }, { publiclyVisible: true }],
-  })
-    .sort('-createdAt')
-    .populate('participants')
-    .limit(5);
-  ctx.assert(foundChats, 404, 'No chats found');
-  const formattedChats = foundChats.map((chat) => {
-    const formattedChat = chat.listFormat();
-    formattedChat.participants = chat.participants.map((user) =>
-      user.participantFormat(),
-    );
-    return formattedChat;
-  });
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
 
-  ctx.body = formattedChats;
+  let foundChats;
+  if (authedUser) {
+    foundChats = await Topic.find({
+      author: { $ne: authedUser._id },
+    });
+  } else {
+    foundChats = await Topic.find({})
+      .sort('-createdAt')
+      .populate('author')
+      .limit(5);
+  }
+  ctx.assert(foundChats, 404, 'No chats found');
+
+  ctx.body = foundChats;
 });
 
 router.get('/chats/others', async (ctx) => {
@@ -135,38 +137,34 @@ router.get('/chats/others', async (ctx) => {
   const authedUser = await User.findOne({ shortId: data });
   ctx.assert(authedUser, 404, 'Authed user found');
 
-  const foundChats = await Chat.find({
-    'participants._id': { $ne: authedUser.id },
-    participants: { $size: 1 },
+  const foundChats = await Topic.find({
+    author: { $ne: authedUser._id },
   })
     .sort('-createdAt')
-    .populate('participants');
-  ctx.assert(foundChats, 404, 'No chats found');
-  const formattedChats = foundChats.map((chat) => {
-    const formattedChat = chat.listFormat();
-    formattedChat.participants = chat.participants.map((user) =>
-      user.participantFormat(),
-    );
-    return formattedChat;
-  });
-  ctx.body = formattedChats;
+    .populate('author');
+
+  ctx.body = foundChats;
 });
 
 router.get('/chats/available', async (ctx) => {
-  const foundChats = await Chat.find({
-    participants: { $size: 1 },
-  })
-    .sort('-createdAt')
-    .populate('participants');
+  const { data } = ctx.state.user;
+  const authedUser = await User.findOne({ shortId: data });
+
+  let foundChats;
+  if (authedUser) {
+    foundChats = await Topic.find({
+      author: { $ne: authedUser._id },
+    });
+  } else {
+    foundChats = await Topic.find({})
+      .sort('-createdAt')
+      .populate('author')
+      .limit(5);
+  }
+
   ctx.assert(foundChats, 404, 'No chats found');
-  const formattedChats = foundChats.map((chat) => {
-    const formattedChat = chat.listFormat();
-    formattedChat.participants = chat.participants.map((user) =>
-      user.participantFormat(),
-    );
-    return formattedChat;
-  });
-  ctx.body = formattedChats;
+
+  ctx.body = foundChats;
 });
 
 router.get('/chats/me', async (ctx) => {
@@ -205,6 +203,14 @@ router.get('/chats/me', async (ctx) => {
   });
 
   ctx.body = formattedChats;
+});
+
+router.get('/topics/:uuid', async (ctx) => {
+  const { uuid } = ctx.params;
+  const topicFound = await Topic.findOne({ shortId: uuid }).populate('author');
+  ctx.assert(topicFound, 404, 'No chat found');
+
+  ctx.body = topicFound;
 });
 
 router.get('/chats/:uuid/messages', async (ctx) => {
@@ -304,7 +310,14 @@ router.get('/chats/:uuid/messages', async (ctx) => {
 });
 
 router.post('/users', async (ctx) => {
-  const { email, password, userName } = ctx.request.body;
+  const {
+    email,
+    password,
+    userName,
+    topic1,
+    topic2,
+    topic3,
+  } = ctx.request.body;
   const previousUser = await User.findOne({
     $or: [{ email }, { userName }],
   });
@@ -316,6 +329,25 @@ router.post('/users', async (ctx) => {
     password,
     userName,
   });
+
+  // create three skill chats (that never end)
+  const firstTopic = await Topic.create({
+    subject: topic1,
+  });
+  const secondTopic = await Topic.create({
+    subject: topic2,
+  });
+  const thirdTopic = await Topic.create({
+    subject: topic3,
+  });
+
+  firstTopic.author = createdUser;
+  secondTopic.author = createdUser;
+  thirdTopic.author = createdUser;
+
+  await firstTopic.save();
+  await secondTopic.save();
+  await thirdTopic.save();
 
   ctx.body = createdUser.public();
 });

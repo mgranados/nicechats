@@ -88,7 +88,7 @@ const Home = (props) => {
       </Hero>
       <Section>
         <Container>
-          <Title>Recent Talks</Title>
+          <Title>You can talk about: </Title>
           {createTalkMaybe}
           {isLoading ? (
             <div>Loading ...</div>
@@ -112,7 +112,7 @@ const Home = (props) => {
                             <span
                               className="is-pulled-right"
                               hasTextAlign="right">
-                              @{talk.participants[0].userName}
+                              <small>with</small> {talk.author.userName}
                             </span>
                           </Content>
                         </CardContent>

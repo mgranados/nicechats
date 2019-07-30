@@ -6,6 +6,7 @@ import Signup from './Signup';
 import Talks from './Talks';
 import MyTalks from './MyTalks';
 import Talk from './Talk';
+import Topic from './Topic';
 import NewTalk from './NewTalk';
 import AddFunds from './AddFunds';
 import NewPass from './NewPass';
@@ -26,7 +27,8 @@ const AppRouter = () => {
         <Route path="/add-funds" component={AddFunds} />
         <Route path="/update-password" component={NewPass} />
         <Route path="/my-talks" component={MyTalks} />
-        <Route path="/t/:id" component={Talk} />
+        <Route path="/t/:id" component={Topic} />
+        <Route path="/c/:id" component={Talk} />
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route component={NotFound} />
       </Switch>
