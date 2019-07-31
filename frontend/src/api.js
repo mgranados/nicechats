@@ -4,10 +4,18 @@ if (process.env.NODE_ENV === 'production') {
   apiUrl = `${process.env.REACT_APP_API_URL}`;
 }
 
-export const getRecentTalks = async (route, userToken = '') => {
-  const response = await fetch(`${apiUrl}/v1/chats/recent`, {
+export const getRecentTalks = async (userToken) => {
+  const options = {
     method: 'get',
-  });
+  };
+  if (userToken) {
+    options.headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + userToken,
+    };
+  }
+  const response = await fetch(`${apiUrl}/v1/chats/recent`, options);
+
   return response;
 };
 

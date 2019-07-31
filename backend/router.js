@@ -49,9 +49,11 @@ router.post('/chats/:topicId', async (ctx) => {
   const topicAuthor = await User.findOne({
     shortId: topic.author.shortId,
   });
-  topicAuthor.chats.push(createdChat);
+  if (authedUser.shortId !== topicAuthor.shortId) {
+    topicAuthor.chats.push(createdChat);
+    await topicAuthor.save();
+  }
   await authedUser.save();
-  await topicAuthor.save();
   await createdChat.save();
 
   const { message } = ctx.request.body;

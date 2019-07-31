@@ -42,7 +42,7 @@ const Home = (props) => {
   useEffect(() => {
     setIsLoading(true);
     async function getHomeTalks() {
-      const response = await getRecentTalks();
+      const response = await getRecentTalks(userSession.token);
       if (response.status === 200) {
         const responseReady = await response.json();
         setRecentTalks(responseReady);
@@ -52,7 +52,7 @@ const Home = (props) => {
       setIsLoading(false);
     }
     getHomeTalks();
-  }, []);
+  }, [userSession]);
 
   return (
     <React.Fragment>
