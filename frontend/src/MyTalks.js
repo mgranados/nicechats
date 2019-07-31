@@ -121,7 +121,13 @@ const MyTalks = (props) => {
                             </MediaContent>
                           </Media>
                           <Content>
-                            <small>{moment(talk.createdAt).format('ll')}</small>
+                            <small isPulled="left">
+                              {' '}
+                              with {talk.otherUserName || 'yourself for now'}
+                            </small>
+                            <small isPulled="right" style={{float: 'right'}}>
+                              {moment(talk.createdAt).format('ll')}
+                            </small>
                           </Content>
                         </CardContent>
                       </Card>

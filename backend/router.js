@@ -200,17 +200,22 @@ router.get('/chats/me', async (ctx) => {
   const { data } = ctx.state.user;
   const authedUser = await User.findOne({ shortId: data }).populate({
     path: 'chats',
-    populate: {
-      path: 'messages',
-      model: 'Message',
-      populate: {
-        path: 'deliveredTo',
+    populate: [
+      {
+        path: 'messages',
+        model: 'Message',
+        populate: {
+          path: 'deliveredTo',
+          model: 'User',
+        },
+      },
+      {
+        path: 'participants',
         model: 'User',
       },
-    },
+    ],
   });
   ctx.assert(authedUser, 404, 'No user logged');
-  //const formattedChats1 = authedUser.chats.map((c) => c.listFormat());
 
   const formattedChats = authedUser.chats.map((c) => {
     let newDelivered = 0;
@@ -225,6 +230,11 @@ router.get('/chats/me', async (ctx) => {
     });
     const formatted = c.listFormat();
     formatted.newDelivered = newDelivered;
+    for (let participant of c.participants) {
+      if (participant.userName !== authedUser.userName) {
+        formatted.otherUserName = participant.userName;
+      }
+    }
     return formatted;
   });
 
