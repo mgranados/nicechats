@@ -1,4 +1,5 @@
 const Koa = require('koa');
+const koaBody = require('koa-body');
 const bodyParser = require('koa-bodyparser');
 const compress = require('koa-compress');
 const responseTime = require('koa-response-time');
@@ -11,7 +12,7 @@ const app = new Koa();
 const router = require('./router');
 
 app.use(cors());
-app.use(bodyParser());
+app.use(koaBody({ multipart: true }));
 app.use(compress());
 app.use(responseTime());
 app.use(logger());

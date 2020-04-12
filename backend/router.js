@@ -6,6 +6,12 @@ const Message = require('./messageModel');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const find = require('lodash.find');
+const { v4 } = require('uuid');
+const fs = require('fs');
+const speech = require('@google-cloud/speech');
+const linear16 = require('linear16');
+
+const client = new speech.SpeechClient();
 
 const router = new Router({
   prefix: '/v1',
@@ -76,6 +82,39 @@ router.post('/chats/:topicId', async (ctx) => {
   );
 
   ctx.body = createdChat.listFormat();
+});
+
+const config = {
+  encoding: 'LINEAR16',
+  languageCode: 'en-US',
+  sampleRateHertz: 16000,
+};
+
+async function getTranscript(audioFile) {
+  const linear16Path = await linear16(audioFile, `./output-${v4()}.wav`);
+  const audio = fs.readFileSync(linear16Path);
+  const speechReq = {
+    audio: {
+      content: audio,
+    },
+    config,
+  };
+
+  const [response] = await client.recognize(speechReq).catch(console.error);
+  const transcription = response.results
+    .map((result) => result.alternatives[0].transcript)
+    .join('\n');
+
+  return transcription;
+}
+
+router.post('/audio', async (ctx) => {
+  const { audio } = ctx.request.files;
+  const audioFilePath = `input-${v4()}.ogg`;
+  fs.copyFileSync(audio.path, audioFilePath);
+  const transcript = await getTranscript(audioFilePath);
+
+  ctx.body = { transcript };
 });
 
 router.post('/chats', async (ctx) => {
